@@ -217,7 +217,7 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
     if (!support) {
         return (
             <TableCell>
-                <Button variant="ghost" size="sm" disabled className="text-[#4D5999] hover:text-[#4D5999] cursor-pointer">
+                <Button variant="ghost" size="sm" disabled className="text-primary hover:text-primary/80 cursor-pointer">
                     Review
                 </Button>
             </TableCell>
@@ -226,14 +226,14 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
 
     return (
         <>
-            {/* Review Button - EXACT SAME AS ORIGINAL */}
+            {/* Review Button */}
             <TableCell>
-                <Button variant="ghost" size="sm" className="text-[#4D5999] hover:text-[#4D5999] cursor-pointer" onClick={handleOpen}>
+                <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 cursor-pointer" onClick={handleOpen}>
                     Review
                 </Button>
             </TableCell>
 
-            {/* Modal - EXACT SAME DESIGN AS ORIGINAL */}
+            {/* Modal */}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
@@ -250,7 +250,7 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
                     )}
 
                     <div className="space-y-6 py-4">
-                        {/* Reported Content Section - EXACT SAME AS ORIGINAL */}
+                        {/* Reported Content Section */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium">Reported Content</h3>
                             <p className="text-foreground font-medium">{support.message || "No message provided"}</p>
@@ -258,7 +258,7 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
 
                         <Separator />
 
-                        {/* Report Details Section - EXACT SAME AS ORIGINAL */}
+                        {/* Report Details Section */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium">Report Details</h3>
                             <div className="grid grid-cols-2 gap-4">
@@ -276,14 +276,14 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
                                 </div>
                                 <div className="space-y-2">
                                     <p className="text-sm text-muted-foreground">Reason</p>
-                                    <p className="font-medium text-red-600">{getReasonDisplayName(support.reason)}</p>
+                                    <p className="font-medium text-destructive">{getReasonDisplayName(support.reason)}</p>
                                 </div>
                             </div>
                         </div>
 
                         <Separator />
 
-                        {/* User Information Section - EXACT SAME AS ORIGINAL */}
+                        {/* User Information Section */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium">User Information</h3>
                             <div className="grid grid-cols-2 gap-4">
@@ -303,9 +303,9 @@ const ReviewReportedContent = ({ support }: ReviewReportedContentProps) => {
                         </div>
                     </div>
 
-                    {/* Footer - EXACT SAME 2 BUTTONS AS ORIGINAL */}
+                    {/* Footer */}
                     <DialogFooter className="flex flex-col sm:flex-row justify-end gap-3">
-                        <Button variant="outline" className="text-[#4D5999] border-[#4D5999] hover:bg-[#4D5999]/10" onClick={handleDismissReport} disabled={isUpdating || isDeleting}>
+                        <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary" onClick={handleDismissReport} disabled={isUpdating || isDeleting}>
                             Dismiss Report
                         </Button>
                         <Button variant="destructive" onClick={handleDeleteSupport} disabled={isDeleting || isUpdating}>

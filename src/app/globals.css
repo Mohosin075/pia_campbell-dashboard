@@ -45,36 +45,36 @@
 :root {
     --radius: 0.625rem;
     --background: #FFFDFD;
-    --foreground: #4A4A4A;
+    --foreground: #1F2937; /* Gray 800 - Better contrast */
     --card: #ffffff;
-    --card-foreground: #4A4A4A;
+    --card-foreground: #1F2937;
     --popover: #ffffff;
-    --popover-foreground: #4A4A4A;
-    --primary: #F48FB1;
+    --popover-foreground: #1F2937;
+    --primary: #DB2777; /* Pink 600 - Accessible with white */
     --primary-foreground: #ffffff;
     --secondary: #FCE4EC;
-    --secondary-foreground: #F48FB1;
+    --secondary-foreground: #831843; /* Pink 900 */
     --muted: #F3F4F6;
-    --muted-foreground: #9CA3AF;
+    --muted-foreground: #6B7280; /* Gray 500 */
     --accent: #FCE4EC;
-    --accent-foreground: #F48FB1;
+    --accent-foreground: #DB2777;
     --destructive: #EF4444;
     --border: #FBCFE8;
     --input: #FBCFE8;
-    --ring: #F48FB1;
-    --chart-1: #F48FB1;
-    --chart-2: #F06292;
-    --chart-3: #EC407A;
-    --chart-4: #F8BBD0;
-    --chart-5: #FCE4EC;
+    --ring: #DB2777;
+    --chart-1: #DB2777;
+    --chart-2: #E11D48;
+    --chart-3: #BE185D;
+    --chart-4: #9D174D;
+    --chart-5: #831843;
     --sidebar: #FDE8ED;
-    --sidebar-foreground: #4A4A4A;
-    --sidebar-primary: #F48FB1;
+    --sidebar-foreground: #1F2937;
+    --sidebar-primary: #DB2777;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #F8BBD0;
-    --sidebar-accent-foreground: #ffffff;
+    --sidebar-accent: #FBCFE8;
+    --sidebar-accent-foreground: #DB2777;
     --sidebar-border: #FBCFE8;
-    --sidebar-ring: #F48FB1;
+    --sidebar-ring: #DB2777;
 }
 
 .dark {
@@ -85,7 +85,7 @@
     --popover: #3D2630;
     --popover-foreground: #FDE8ED;
     --primary: #F48FB1;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #2D1B22; /* Dark text on light pink button */
     --secondary: #5D3A48;
     --secondary-foreground: #FDE8ED;
     --muted: #5D3A48;

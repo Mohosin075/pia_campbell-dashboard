@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError 
 import { RootState } from "../store";
 import { logout, setToken } from "../features/auth/authSlice";
 
-const baseURL = "https://mohosin5001.binarybards.online"
-// const baseURL = process.env.NEXT_PUBLIC_BASEURL as string;
+// const baseURL = "http://10.10.7.50:4006"
+const baseURL = process.env.NEXT_PUBLIC_BASEURL as string;
 
 const baseQuery = fetchBaseQuery({
     baseUrl: `${baseURL}/api/v1`,

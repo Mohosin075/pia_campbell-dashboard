@@ -32,7 +32,7 @@ export function AppSidebar() {
                 <div>
                     <div className="p-4 pb-8">
                         <Link href="/" className="block">
-                            <h1 className="font-serif text-2xl text-foreground uppercase tracking-widest">ASCELA ADMIN</h1>
+                            <h1 className="font-serif text-xl text-foreground uppercase tracking-widest">ASCELA ADMIN</h1>
                             <p className="text-xs text-muted-foreground mt-1">Dashboard Control Center</p>
                         </Link>
                     </div>

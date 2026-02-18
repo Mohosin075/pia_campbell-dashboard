@@ -203,43 +203,199 @@ export default function AnalyticsPage() {
                 </div>
             </div>
 
-            {/* Popular Recipes */}
-            <div className="space-y-4">
-                <h2 className="text-xl font-serif text-foreground uppercase tracking-widest">Popular Recipes</h2>
-                <p className="text-sm text-muted-foreground">Most viewed and favorited recipes</p>
-
-                <div className="space-y-3">
-                    {[
-                        { id: 1, name: "Iron-Rich Spinach Smoothie", views: "4,567", likes: "1,234", icon: <Spade className="w-4 h-4 fill-foreground" /> },
-                        { id: 2, name: "Quinoa Buddha Bowl", views: "3,890", likes: "1,056", icon: <Spade className="w-4 h-4 fill-foreground" /> },
-                        { id: 3, name: "Salmon Power Bowl", views: "3,456", likes: "987", icon: <div className="w-4 h-4 rounded-full bg-white border border-gray-300" /> },
-                        { id: 4, name: "Sweet Potato Comfort Bowl", views: "3,234", likes: "876", icon: <div className="w-4 h-4 rounded-full bg-white border border-gray-300" /> },
-                        { id: 5, name: "Berry Blast Smoothie", views: "2,987", likes: "765", icon: <Spade className="w-4 h-4 fill-foreground" /> },
-                    ].map((recipe, index) => (
-                        <div key={recipe.id} className="bg-primary/5 rounded-lg p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-8 h-8 rounded-full bg-primary/40 text-white flex items-center justify-center font-bold text-sm">
-                                    {index + 1}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className=" border-none shadow-sm">
+                    <CardContent className="p-6 space-y-4">
+                        <h2 className="text-sm font-serif uppercase tracking-[0.35em] text-foreground">
+                            Phase Distribution
+                        </h2>
+                        <div className="space-y-4 text-sm">
+                            {[
+                                { label: "Menstrual", recipes: 4, percent: 40, icon: <Spade className="w-4 h-4 fill-foreground" /> },
+                                { label: "Follicular", recipes: 6, percent: 60, icon: <Spade className="w-4 h-4 fill-foreground" /> },
+                                { label: "Ovulation", recipes: 6, percent: 60, icon: <div className="w-3 h-3 rounded-sm rotate-45 bg-foreground" /> },
+                                { label: "Luteal", recipes: 4, percent: 40, icon: <div className="w-3 h-3 rounded-full bg-foreground" /> },
+                            ].map((item) => (
+                                <div key={item.label} className="space-y-1.5">
+                                    <div className="flex items-center justify-between text-xs sm:text-sm">
+                                        <div className="flex items-center gap-2">
+                                            {item.icon}
+                                            <span>{item.label}</span>
+                                        </div>
+                                        <span className="text-muted-foreground">
+                                            {item.recipes} recipes ({item.percent}%)
+                                        </span>
+                                    </div>
+                                    <div className="h-1.5 rounded-full bg-[#FEE4EC] overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full bg-[#F8A8C6]"
+                                            style={{ width: `${item.percent}%` }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    {recipe.icon}
-                                    <span className="font-medium">{recipe.name}</span>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="border-none shadow-sm">
+                    <CardContent className="p-6 space-y-4">
+                        <h2 className="text-sm font-serif uppercase tracking-[0.35em] text-foreground">
+                            Category Distribution
+                        </h2>
+                        <div className="space-y-4 text-sm">
+                            {[
+                                { label: "Breakfast", recipes: 0, percent: 0 },
+                                { label: "Lunch", recipes: 0, percent: 0 },
+                                { label: "Dinner", recipes: 0, percent: 0 },
+                                { label: "Snack", recipes: 0, percent: 0 },
+                                { label: "Smoothie", recipes: 0, percent: 0 },
+                                { label: "Dessert", recipes: 0, percent: 0 },
+                            ].map((item) => (
+                                <div key={item.label} className="space-y-1.5">
+                                    <div className="flex items-center justify-between text-xs sm:text-sm">
+                                        <span>{item.label}</span>
+                                        <span className="text-muted-foreground">
+                                            {item.recipes} recipes ({item.percent}%)
+                                        </span>
+                                    </div>
+                                    <div className="h-1.5 rounded-full bg-[#FEE4EC] overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full bg-[#F8A8C6]"
+                                            style={{ width: `${item.percent}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <Card className="border-none shadow-sm">
+                <CardContent className="p-6 space-y-4">
+                    <h2 className="text-sm font-serif uppercase tracking-[0.35em] text-foreground">
+                        Recent User Activity
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                        Latest user actions and events
+                    </p>
+                    <div className="space-y-2">
+                        {[
+                            {
+                                id: 1,
+                                email: "jane@example.com",
+                                action: "Subscribed to Yearly plan",
+                                time: "2 hours ago",
+                                amount: "+$99.99",
+                            },
+                            {
+                                id: 2,
+                                email: "mike@example.com",
+                                action: "Saved 5 recipes to favorites",
+                                time: "3 hours ago",
+                            },
+                            {
+                                id: 3,
+                                email: "sarah@example.com",
+                                action: "Created grocery list",
+                                time: "5 hours ago",
+                            },
+                            {
+                                id: 4,
+                                email: "demo@ascela.com",
+                                action: "Completed health profile",
+                                time: "6 hours ago",
+                            },
+                        ].map((item) => (
+                            <div
+                                key={item.id}
+                                className="flex items-center justify-between rounded-xl bg-[#FFF5F8] px-4 py-3"
+                            >
+                                <div>
+                                    <p className="text-sm font-medium">{item.email}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {item.action}
+                                    </p>
+                                </div>
+                                <div className="text-right text-xs sm:text-sm">
+                                    <p className="text-muted-foreground">{item.time}</p>
+                                    {item.amount && (
+                                        <p className="text-[#00B894] font-semibold">
+                                            {item.amount}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                    <Eye className="w-4 h-4" />
-                                    <span>{recipe.views}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Heart className="w-4 h-4 text-primary" />
-                                    <span>{recipe.likes}</span>
-                                </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm">
+                <CardContent className="p-6 space-y-6">
+                    <h2 className="text-sm font-serif uppercase tracking-[0.35em] text-foreground">
+                        Monthly Growth
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                        User growth and revenue trends
+                    </p>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <p className="text-xs text-muted-foreground">User Growth</p>
+                            <div className="flex items-end gap-3 h-32">
+                                {[
+                                    { month: "Aug", value: 40 },
+                                    { month: "Sep", value: 45 },
+                                    { month: "Oct", value: 65 },
+                                    { month: "Nov", value: 70 },
+                                    { month: "Dec", value: 85 },
+                                    { month: "Jan", value: 95 },
+                                ].map((item) => (
+                                    <div
+                                        key={item.month}
+                                        className="flex flex-col items-center justify-end gap-2 flex-1"
+                                    >
+                                        <div
+                                            className="w-full rounded-t-xl bg-[#F8A8C6]"
+                                            style={{ height: `${item.value}%` }}
+                                        />
+                                        <span className="text-xs text-muted-foreground">
+                                            {item.month}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
+                        <div className="space-y-2">
+                            <p className="text-xs text-muted-foreground">Revenue Growth</p>
+                            <div className="flex items-end gap-3 h-32">
+                                {[
+                                    { month: "Aug", value: 35 },
+                                    { month: "Sep", value: 45 },
+                                    { month: "Oct", value: 70 },
+                                    { month: "Nov", value: 75 },
+                                    { month: "Dec", value: 90 },
+                                    { month: "Jan", value: 55 },
+                                ].map((item) => (
+                                    <div
+                                        key={item.month}
+                                        className="flex flex-col items-center justify-end gap-2 flex-1"
+                                    >
+                                        <div
+                                            className="w-full rounded-t-xl bg-[#00B894]"
+                                            style={{ height: `${item.value}%` }}
+                                        />
+                                        <span className="text-xs text-muted-foreground">
+                                            {item.month}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }

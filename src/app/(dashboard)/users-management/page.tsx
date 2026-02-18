@@ -18,7 +18,7 @@ const users = [
         lastActive: "2 hours ago",
         savedRecipes: 12,
         favorites: 8,
-        image: "/avatar-placeholder.png"
+        image: "/user.png",
     },
     {
         id: 2,
@@ -30,7 +30,7 @@ const users = [
         lastActive: "1 day ago",
         savedRecipes: 45,
         favorites: 32,
-        image: "/avatar-placeholder.png"
+        image: "/avatar.png",
     },
     {
         id: 3,
@@ -42,7 +42,7 @@ const users = [
         lastActive: "3 hours ago",
         savedRecipes: 78,
         favorites: 56,
-        image: "/avatar-placeholder.png"
+        image: "/avatar.png",
     },
     {
         id: 4,
@@ -54,7 +54,7 @@ const users = [
         lastActive: "5 days ago",
         savedRecipes: 3,
         favorites: 1,
-        image: "/avatar-placeholder.png"
+        image: "/avatar.png",
     },
     {
         id: 5,
@@ -66,7 +66,7 @@ const users = [
         lastActive: "1 hour ago",
         savedRecipes: 92,
         favorites: 67,
-        image: "/avatar-placeholder.png"
+        image: "/avatar.png",
     }
 ];
 
@@ -116,9 +116,14 @@ export default function UserManagement() {
             <div className="space-y-4">
                 {users.map((user) => (
                     <div key={user.id} className="bg-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center relative">
-                        <div className="w-16 h-16 bg-gray-300 rounded-full shrink-0 overflow-hidden">
-                             {/* Placeholder for avatar */}
-                             <div className="w-full h-full bg-gray-400 flex items-center justify-center text-white text-xl font-bold">{user.name.charAt(0)}</div>
+                        <div className="relative w-16 h-16 bg-gray-300 rounded-full shrink-0 overflow-hidden">
+                            {user.image ? (
+                                <Image src={user.image} alt={user.name} fill className="object-cover" />
+                            ) : (
+                                <div className="w-full h-full bg-gray-400 flex items-center justify-center text-white text-xl font-bold">
+                                    {user.name.charAt(0)}
+                                </div>
+                            )}
                         </div>
                         
                         <div className="flex-1 space-y-2">

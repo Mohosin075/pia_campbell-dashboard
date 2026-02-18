@@ -13,48 +13,53 @@ const recipes = [
     {
         id: 1,
         title: "Avocado Toast with Eggs",
-        description: "A nutritious and satisfying breakfast packed with healthy fats, protein, and fiber to keep you energized throughout the morning.",
+        description:
+            "A nutritious and satisfying breakfast packed with healthy fats, protein, and fiber to keep you energized throughout the morning.",
         category: "breakfast",
         phase: "Menstrual",
         time: "NaN min",
-        image: "/placeholder-recipe.jpg" // You'd replace this
+        image: "/recipe (1).jpg",
     },
     {
         id: 2,
         title: "Salmon Quinoa Power Bowl",
-        description: "A complete meal with lean protein, whole grains, and fresh vegetables, perfect for sustained energy and hormone balance.",
+        description:
+            "A complete meal with lean protein, whole grains, and fresh vegetables, perfect for sustained energy and hormone balance.",
         category: "lunch",
         phase: "Follicular",
         time: "NaN min",
-        image: "/placeholder-recipe.jpg"
+        image: "/recipe (2).jpg",
     },
     {
         id: 3,
         title: "Herb Roasted Chicken with Vegetables",
-        description: "A wholesome dinner featuring lean protein and colorful vegetables, perfectly seasoned with aromatic herbs.",
+        description:
+            "A wholesome dinner featuring lean protein and colorful vegetables, perfectly seasoned with aromatic herbs.",
         category: "dinner",
         phase: "Ovulatory",
         time: "NaN min",
-        image: "/placeholder-recipe.jpg"
+        image: "/recipe (3).jpg",
     },
     {
         id: 4,
         title: "Berry Antioxidant Smoothie Bowl",
-        description: "A refreshing and nutrient-dense smoothie bowl loaded with antioxidants, probiotics, and essential vitamins.",
+        description:
+            "A refreshing and nutrient-dense smoothie bowl loaded with antioxidants, probiotics, and essential vitamins.",
         category: "breakfast",
         phase: "Luteal",
         time: "NaN min",
-        image: "/placeholder-recipe.jpg"
+        image: "/recipe (4).jpg",
     },
     {
         id: 5,
         title: "Dark Chocolate Energy Bites",
-        description: "Indulgent yet nutritious chocolate treats that satisfy sweet cravings while providing essential minerals.",
+        description:
+            "Indulgent yet nutritious chocolate treats that satisfy sweet cravings while providing essential minerals.",
         category: "dessert",
         phase: "Menstrual",
         time: "NaN min",
-        image: "/placeholder-recipe.jpg"
-    }
+        image: "/recipe (2).jpg",
+    },
 ];
 
 export default function RecipeManagement() {
@@ -131,9 +136,8 @@ export default function RecipeManagement() {
             <div className="space-y-4">
                 {recipes.map((recipe) => (
                     <div key={recipe.id} className="bg-primary/10 rounded-xl p-4 flex gap-6 items-center">
-                        <div className="w-24 h-24 bg-gray-200 rounded-lg shrink-0 overflow-hidden">
-                             {/* Placeholder for image */}
-                             <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500 text-xs">Image</div>
+                        <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden">
+                            <Image src={recipe.image} alt={recipe.title} fill className="object-cover" />
                         </div>
                         <div className="flex-1">
                             <h3 className="font-serif text-lg font-medium text-foreground">{recipe.title}</h3>

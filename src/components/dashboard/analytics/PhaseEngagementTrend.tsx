@@ -21,6 +21,13 @@ const data = [
     { name: "", value: 65 },
 ];
 
+const phases = [
+    { title: "Menstrual", range: "Days 1-5" },
+    { title: "Follicular", range: "Days 6-12" },
+    { title: "Ovulatory", range: "Days 13-16" },
+    { title: "Luteal", range: "Days 17-28" },
+];
+
 export default function PhaseEngagementTrend() {
     return (
         <div className="w-full h-[300px] mt-8">
@@ -37,22 +44,18 @@ export default function PhaseEngagementTrend() {
                     <Area type="monotone" dataKey="value" stroke="#F48FB1" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>
             </ResponsiveContainer>
-            <div className="flex justify-between px-10 mt-2 text-xs font-serif text-primary uppercase tracking-widest">
-                <div className="text-center">
-                    <div className="font-bold">Menstrual</div>
-                    <div className="text-[10px] text-muted-foreground">Days 1-5</div>
-                </div>
-                <div className="text-center">
-                    <div className="font-bold">Follicular</div>
-                    <div className="text-[10px] text-muted-foreground">Days 6-12</div>
-                </div>
-                <div className="text-center">
-                    <div className="font-bold">Ovulatory</div>
-                    <div className="text-[10px] text-muted-foreground">Days 13-16</div>
-                </div>
-                <div className="text-center">
-                    <div className="font-bold">Luteal</div>
-                    <div className="text-[10px] text-muted-foreground">Days 17-28</div>
+            <div className="mt-6 px-12 border-t border-[#FDE8ED] pt-3 pb-4">
+                <div className="flex justify-between text-[#F48FB1] font-serif">
+                    {phases.map((phase) => (
+                        <div key={phase.title} className="w-1/4 text-center">
+                            <div className="text-xs font-bold uppercase tracking-[0.18em]">
+                                {phase.title}
+                            </div>
+                            <div className="mt-1 text-[11px]">
+                                {phase.range}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

@@ -45,7 +45,7 @@
 //                     <SidebarTrigger className="md:hidden block" />
 //                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Overview</h1>
 //                 </div>
-//                 <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with Gathering today</p>
+//                 <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with ascela today</p>
 //             </div>
 
 //             {/* Stats Cards Grid */}
@@ -122,7 +122,7 @@ export default function DashboardOverview() {
                         <SidebarTrigger className="md:hidden block" />
                         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Overview</h1>
                     </div>
-                    <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with Gathering today</p>
+                    <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with ascela today</p>
                 </div>
                 <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[1, 2, 3, 4].map((i) => (
@@ -157,7 +157,7 @@ export default function DashboardOverview() {
                     <SidebarTrigger className="md:hidden block" />
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Overview</h1>
                 </div>
-                <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with Gathering today</p>
+                <p className="text-gray-600 mt-2">Welcome back! Here&apos;s what&apos;s happening with ascela today</p>
             </div>
 
             {/* Stats Cards Grid */}

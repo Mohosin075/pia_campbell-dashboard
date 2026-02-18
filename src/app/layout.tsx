@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cinzel } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/Provider/ReduxProvider";
 
-const inter = Inter({
+const cinzel = Cinzel({
     subsets: ["latin"],
-    variable: "--font-inter",
+    weight: ["400", "700"],
+    variable: "--font-cinzel",
 });
 
 export const metadata: Metadata = {
-    title: "Gathering Dashboard",
-    description: "Gathering Dashboard",
+    title: "ascela Dashboard",
+    description: "ascela Dashboard",
 };
 
 export default function RootLayout({
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${inter.variable} antialiased`}>
+            <body className={`${cinzel.className} ${cinzel.variable} antialiased`}>
                 <ReduxProvider>{children}</ReduxProvider>
             </body>
         </html>

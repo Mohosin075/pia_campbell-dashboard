@@ -2,6 +2,16 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Eye, Heart, Activity, Spade } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+const monthlyGrowthData = [
+    { month: "Aug", users: 40, revenue: 35 },
+    { month: "Sep", users: 45, revenue: 45 },
+    { month: "Oct", users: 65, revenue: 70 },
+    { month: "Nov", users: 75, revenue: 75 },
+    { month: "Dec", users: 90, revenue: 90 },
+    { month: "Jan", users: 100, revenue: 55 },
+];
 
 export default function AnalyticsPage() {
     return (
@@ -332,7 +342,7 @@ export default function AnalyticsPage() {
                 </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm">
+            <Card className="bg-[#FFF5F8] border-none shadow-sm rounded-3xl">
                 <CardContent className="p-6 space-y-6">
                     <h2 className="text-sm font-serif uppercase tracking-[0.35em] text-foreground">
                         Monthly Growth
@@ -340,57 +350,59 @@ export default function AnalyticsPage() {
                     <p className="text-sm text-muted-foreground">
                         User growth and revenue trends
                     </p>
-                    <div className="space-y-4">
-                        <div className="space-y-2">
+                    <div className="space-y-8">
+                        <div className="space-y-3">
                             <p className="text-xs text-muted-foreground">User Growth</p>
-                            <div className="flex items-end gap-3 h-32">
-                                {[
-                                    { month: "Aug", value: 40 },
-                                    { month: "Sep", value: 45 },
-                                    { month: "Oct", value: 65 },
-                                    { month: "Nov", value: 70 },
-                                    { month: "Dec", value: 85 },
-                                    { month: "Jan", value: 95 },
-                                ].map((item) => (
-                                    <div
-                                        key={item.month}
-                                        className="flex flex-col items-center justify-end gap-2 flex-1"
+                            <div className="h-40">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={monthlyGrowthData}
+                                        margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+                                        barCategoryGap={5}
+                                        barGap={0}
                                     >
-                                        <div
-                                            className="w-full rounded-t-xl bg-[#F8A8C6]"
-                                            style={{ height: `${item.value}%` }}
+                                        <XAxis
+                                            dataKey="month"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                                         />
-                                        <span className="text-xs text-muted-foreground">
-                                            {item.month}
-                                        </span>
-                                    </div>
-                                ))}
+                                        <YAxis hide />
+                                        <Tooltip cursor={{ fill: "transparent" }} />
+                                        <Bar
+                                            dataKey="users"
+                                            fill="#F8A8C6"
+                                            radius={[18, 18, 0, 0]}
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <p className="text-xs text-muted-foreground">Revenue Growth</p>
-                            <div className="flex items-end gap-3 h-32">
-                                {[
-                                    { month: "Aug", value: 35 },
-                                    { month: "Sep", value: 45 },
-                                    { month: "Oct", value: 70 },
-                                    { month: "Nov", value: 75 },
-                                    { month: "Dec", value: 90 },
-                                    { month: "Jan", value: 55 },
-                                ].map((item) => (
-                                    <div
-                                        key={item.month}
-                                        className="flex flex-col items-center justify-end gap-2 flex-1"
+                            <div className="h-40">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={monthlyGrowthData}
+                                        margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+                                        barCategoryGap={5}
+                                        barGap={0}
                                     >
-                                        <div
-                                            className="w-full rounded-t-xl bg-[#00B894]"
-                                            style={{ height: `${item.value}%` }}
+                                        <XAxis
+                                            dataKey="month"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                                         />
-                                        <span className="text-xs text-muted-foreground">
-                                            {item.month}
-                                        </span>
-                                    </div>
-                                ))}
+                                        <YAxis hide />
+                                        <Tooltip cursor={{ fill: "transparent" }} />
+                                        <Bar
+                                            dataKey="revenue"
+                                            fill="#00B894"
+                                            radius={[18, 18, 0, 0]}
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
                     </div>

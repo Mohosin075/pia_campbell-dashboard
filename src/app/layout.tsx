@@ -10,8 +10,8 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-    title: "ascela Dashboard",
-    description: "ascela Dashboard",
+    title: "Ascela Dashboard",
+    description: "Ascela Dashboard",
 };
 
 export default function RootLayout({

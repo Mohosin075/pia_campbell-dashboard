@@ -115,7 +115,7 @@ export default function UserManagement() {
             {/* User List */}
             <div className="space-y-4">
                 {users.map((user) => (
-                    <div key={user.id} className="bg-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center relative">
+                    <div key={user.id} className="bg-secondary rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center relative">
                         <div className="relative w-16 h-16 bg-gray-300 rounded-full shrink-0 overflow-hidden">
                             {user.image ? (
                                 <Image src={user.image} alt={user.name} fill className="object-cover" />

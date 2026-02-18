@@ -28,7 +28,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar className="border-r border-sidebar-border bg-sidebar">
-            <SidebarContent className="bg-sidebar p-4 h-full flex flex-col justify-between">
+            <SidebarContent className="bg-secondary p-4 h-full flex flex-col justify-between">
                 <div>
                     <div className="p-4 pb-8">
                         <Link href="/" className="block">

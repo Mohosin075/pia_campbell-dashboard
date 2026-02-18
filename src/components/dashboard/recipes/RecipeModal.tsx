@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Spade } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface RecipeModalProps {
     isOpen: boolean;
@@ -16,53 +16,33 @@ interface RecipeModalProps {
 }
 
 export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalProps) {
+    const recipe = mode === "edit" && initialData ? initialData : null;
+
     // Form State
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
-    const [category, setCategory] = useState("Breakfast");
-    const [phases, setPhases] = useState<string[]>([]);
-    const [prepTime, setPrepTime] = useState("");
+    const [title, setTitle] = useState(() => recipe?.title || "");
+    const [description, setDescription] = useState(() => recipe?.description || "");
+    const [image, setImage] = useState(() => recipe?.image || "");
+    const [category, setCategory] = useState(() => recipe?.category || "Breakfast");
+    const [phases, setPhases] = useState<string[]>(() =>
+        recipe?.phase ? [recipe.phase] : []
+    );
+    const [prepTime, setPrepTime] = useState(() =>
+        recipe?.time ? recipe.time.replace(" min", "") : ""
+    );
     const [cookTime, setCookTime] = useState("");
     const [servings, setServings] = useState("");
-    const [ingredients, setIngredients] = useState([{ name: "", amount: "", unit: "" }]);
-    const [instructions, setInstructions] = useState([""]);
-    const [nutrition, setNutrition] = useState({ calories: "", protein: "", carbs: "", fat: "" });
-    const [phaseBenefits, setPhaseBenefits] = useState<Record<string, string>>({});
-
-    // Reset or Populate form on open
-    useEffect(() => {
-        if (isOpen) {
-            if (mode === "edit" && initialData) {
-                setTitle(initialData.title || "");
-                setDescription(initialData.description || "");
-                setImage(initialData.image || "");
-                setCategory(initialData.category || "Breakfast");
-                setPhases(initialData.phase ? [initialData.phase] : []); // Mapping single phase to array for now
-                setPrepTime(initialData.time ? initialData.time.replace(" min", "") : "");
-                setCookTime(""); // Not in initialData mock
-                setServings(""); // Not in initialData mock
-                setIngredients(initialData.ingredients || [{ name: "", amount: "", unit: "" }]);
-                setInstructions(initialData.instructions || [""]);
-                setNutrition(initialData.nutrition || { calories: "", protein: "", carbs: "", fat: "" });
-                setPhaseBenefits(initialData.phaseBenefits || {});
-            } else {
-                // Reset for create
-                setTitle("");
-                setDescription("");
-                setImage("");
-                setCategory("Breakfast");
-                setPhases([]);
-                setPrepTime("");
-                setCookTime("");
-                setServings("");
-                setIngredients([{ name: "", amount: "", unit: "" }]);
-                setInstructions([""]);
-                setNutrition({ calories: "", protein: "", carbs: "", fat: "" });
-                setPhaseBenefits({});
-            }
-        }
-    }, [isOpen, mode, initialData]);
+    const [ingredients, setIngredients] = useState(
+        () => recipe?.ingredients || [{ name: "", amount: "", unit: "" }]
+    );
+    const [instructions, setInstructions] = useState<string[]>(
+        () => recipe?.instructions || [""]
+    );
+    const [nutrition, setNutrition] = useState(() =>
+        recipe?.nutrition || { calories: "", protein: "", carbs: "", fat: "" }
+    );
+    const [phaseBenefits, setPhaseBenefits] = useState<Record<string, string>>(
+        () => recipe?.phaseBenefits || {}
+    );
 
     const categories = ["Breakfast", "Lunch", "Dinner", "Snack", "Smoothie", "Dessert"];
     const allPhases = ["Menstrual", "Follicular", "Ovulation", "Luteal"];
@@ -80,7 +60,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
     };
 
     const removeIngredient = (index: number) => {
-        setIngredients(ingredients.filter((_, i) => i !== index));
+        setIngredients(ingredients.filter((_ : any, i : any) => i !== index));
     };
 
     const addInstruction = () => {
@@ -103,7 +83,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 bg-sidebar/50 backdrop-blur-sm border-none">
+            <DialogContent className="max-w-4xl w-full max-h-[90vh] flex flex-col p-0 bg-secondary backdrop-blur-sm border-none">
                 <DialogHeader className="p-6 pb-2">
                     <div className="flex justify-between items-center">
                         <DialogTitle className="text-xl font-serif text-foreground uppercase tracking-widest">
@@ -239,7 +219,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                 </Button>
                             </div>
                             <div className="space-y-2">
-                                {ingredients.map((ing, i) => (
+                                {ingredients.map((ing : any, i : any) => (
                                     <div key={i} className="flex gap-2">
                                         <Input 
                                             placeholder="Ingredient name" 

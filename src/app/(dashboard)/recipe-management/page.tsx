@@ -135,7 +135,7 @@ export default function RecipeManagement() {
             {/* Recipe List */}
             <div className="space-y-4">
                 {recipes.map((recipe) => (
-                    <div key={recipe.id} className="bg-primary/10 rounded-xl p-4 flex gap-6 items-center">
+                    <div key={recipe.id} className="bg-secondary rounded-xl p-4 flex gap-6 items-center">
                         <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden">
                             <Image src={recipe.image} alt={recipe.title} fill className="object-cover" />
                         </div>

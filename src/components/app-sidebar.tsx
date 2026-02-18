@@ -57,16 +57,29 @@ export function AppSidebar() {
                     </SidebarGroup>
                 </div>
                 
-                {/* User Profile / Logout */}
                 <div className="mt-auto pt-4 border-t border-sidebar-border/50">
-                     {/* <div className="flex items-center gap-3 mb-4 px-2">
-                        <Image src={getImageUrl(myProfile?.data?.profile) || "/avatar.png"} alt="Profile" width={40} height={40} className="rounded-full object-cover w-10 h-10 border-2 border-white" />
-                        <div className="overflow-hidden">
-                            <h1 className="font-medium text-foreground text-sm truncate">{myProfile?.data?.email || "admin@ascela.com"}</h1>
-                            <p className="text-xs text-muted-foreground capitalize">{myProfile?.data?.role || "Administrator"}</p>
+                    <div className="flex items-center gap-3 mb-4 px-2">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/60 shadow-sm">
+                            <Image
+                                src={getImageUrl(myProfile?.data?.profile) || "/avatar.png"}
+                                alt="Profile"
+                                fill
+                                className="object-cover"
+                            />
                         </div>
-                    </div> */}
-                    <button onClick={handleLogout} className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 bg-white/50 text-foreground hover:bg-white hover:text-primary w-full cursor-pointer text-sm font-medium border border-sidebar-border">
+                        <div className="overflow-hidden">
+                            <h2 className="text-sm font-serif uppercase tracking-widest text-primary truncate">
+                                {myProfile?.data?.name || "Admin User"}
+                            </h2>
+                            <p className="text-xs text-muted-foreground truncate">
+                                {myProfile?.data?.email || "admin@platform.dk"}
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="mt-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-colors duration-200 bg-white text-primary hover:bg-primary hover:text-primary-foreground w-full cursor-pointer text-xs font-semibold tracking-[0.18em] uppercase border border-sidebar-border/60"
+                    >
                         <span>Logout</span>
                     </button>
                 </div>

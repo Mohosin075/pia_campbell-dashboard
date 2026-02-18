@@ -89,12 +89,14 @@ export default function RecipeManagement() {
             </div>
 
             <RecipeModal 
+                key={isCreateOpen ? "create-open" : "create-closed"}
                 isOpen={isCreateOpen} 
                 onClose={() => setIsCreateOpen(false)} 
                 mode="create" 
             />
 
             <RecipeModal 
+                key={selectedRecipe?.id ?? "edit"}
                 isOpen={isEditOpen} 
                 onClose={() => setIsEditOpen(false)} 
                 mode="edit" 
@@ -105,10 +107,10 @@ export default function RecipeManagement() {
             <div className="flex gap-4">
                 <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                    <Input placeholder="Search recipes..." className="pl-10 bg-muted/50 border-none rounded-full" />
+                    <Input placeholder="Search recipes..." className="pl-10 bg-input border-none rounded-2xl" />
                 </div>
                 <Select>
-                    <SelectTrigger className="w-[180px] bg-muted/50 border-none rounded-full">
+                    <SelectTrigger className="w-[180px] bg-input border-none rounded-2xl">
                         <SelectValue placeholder="All Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -119,7 +121,7 @@ export default function RecipeManagement() {
                     </SelectContent>
                 </Select>
                 <Select>
-                    <SelectTrigger className="w-[180px] bg-muted/50 border-none rounded-full">
+                    <SelectTrigger className="w-[180px] bg-input border-none rounded-2xl">
                         <SelectValue placeholder="All Phases" />
                     </SelectTrigger>
                     <SelectContent>

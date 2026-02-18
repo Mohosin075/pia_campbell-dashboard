@@ -14,7 +14,7 @@ export default function AnalyticsPage() {
 
             {/* Top Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-primary/5 border-none shadow-none">
+                <Card className="bg-secondary border-none shadow-sm">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>
@@ -27,7 +27,7 @@ export default function AnalyticsPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-primary/5 border-none shadow-none">
+                <Card className="bg-secondary border-none shadow-sm">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>
@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-primary/5 border-none shadow-none">
+                <Card className="bg-secondary border-none shadow-sm">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>
@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-primary/5 border-none shadow-none">
+                <Card className="bg-secondary border-none shadow-sm">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>

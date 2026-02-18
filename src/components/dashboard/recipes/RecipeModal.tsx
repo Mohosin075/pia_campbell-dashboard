@@ -83,7 +83,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl w-full max-h-[90vh] flex flex-col p-0 bg-secondary backdrop-blur-sm border-none">
+            <DialogContent className="w-full max-h-[90vh] flex flex-col p-0 bg-secondary backdrop-blur-sm border-none max-w-[90vw] sm:max-w-[50vw]">
                 <DialogHeader className="p-6 pb-2">
                     <div className="flex justify-between items-center">
                         <DialogTitle className="text-xl font-serif text-foreground uppercase tracking-widest">
@@ -304,7 +304,6 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                             </div>
                         </div>
                         
-                        {/* Nutrition */}
                         <div className="space-y-3">
                             <Label>Nutrition Facts</Label>
                             <div className="grid grid-cols-4 gap-2">
@@ -345,6 +344,69 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="mt-6 rounded-2xl bg-white/80 border border-white shadow-sm p-5 space-y-4">
+                            <div className="space-y-1">
+                                <h3 className="text-sm font-semibold text-foreground">
+                                    Phase-Specific Benefits (Optional)
+                                </h3>
+                                <p className="text-xs text-muted-foreground">
+                                    Explain why this recipe is beneficial for each selected phase.
+                                </p>
+                            </div>
+                            {phases.length === 0 ? (
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                                        <Spade className="w-4 h-4 text-primary fill-current" />
+                                        <span>Phase Benefits</span>
+                                    </div>
+                                    <Textarea
+                                        placeholder="e.g., Rich in iron to replenish blood loss, warming spices for comfort..."
+                                        className="bg-white border-none shadow-sm min-h-[90px] resize-none text-sm"
+                                        value={phaseBenefits["General"] || ""}
+                                        onChange={(e) =>
+                                            setPhaseBenefits({
+                                                ...phaseBenefits,
+                                                General: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {phases.map((phase) => (
+                                        <div key={phase} className="space-y-2">
+                                            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                                                {phase === "Menstrual" && (
+                                                    <Spade className="w-4 h-4 text-primary fill-current" />
+                                                )}
+                                                {phase === "Follicular" && (
+                                                    <Spade className="w-4 h-4 text-primary fill-current" />
+                                                )}
+                                                {phase === "Ovulation" && (
+                                                    <div className="w-3 h-3 rounded-sm rotate-45 bg-primary" />
+                                                )}
+                                                {phase === "Luteal" && (
+                                                    <div className="w-3 h-3 rounded-full bg-primary" />
+                                                )}
+                                                <span>{phase} Phase Benefits</span>
+                                            </div>
+                                            <Textarea
+                                                placeholder="e.g., Rich in iron to replenish blood loss, warming spices for comfort..."
+                                                className="bg-white border-none shadow-sm min-h-[90px] resize-none text-sm"
+                                                value={phaseBenefits[phase] || ""}
+                                                onChange={(e) =>
+                                                    setPhaseBenefits({
+                                                        ...phaseBenefits,
+                                                        [phase]: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                     </div>

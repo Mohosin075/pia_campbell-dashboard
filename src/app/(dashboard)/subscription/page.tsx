@@ -7,6 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit2, DollarSign, Users, TrendingUp, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 export default function SubscriptionDashboard() {
   const stats = [
@@ -113,7 +120,7 @@ export default function SubscriptionDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm bg-[#FDE8ED]/50 backdrop-blur-sm">
+          <Card key={i} className="border-none shadow-sm bg-secondary backdrop-blur-sm">
             <CardContent className="p-6 flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
@@ -130,7 +137,7 @@ export default function SubscriptionDashboard() {
       {/* Middle Section: Distribution & Revenue */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Plan Distribution */}
-        <Card className="border-none shadow-sm bg-[#FDE8ED]/30 p-6">
+        <Card className="border-none shadow-sm bg-secondary/20 p-6">
             <h3 className="font-serif text-lg uppercase tracking-wider mb-6">PLAN DISTRIBUTION</h3>
             <div className="space-y-6">
                 <div className="space-y-2">
@@ -151,7 +158,7 @@ export default function SubscriptionDashboard() {
         </Card>
 
         {/* Revenue Breakdown */}
-        <Card className="border-none shadow-sm bg-[#FDE8ED]/30 p-6">
+        <Card className="border-none shadow-sm bg-secondary/20 p-6">
             <h3 className="font-serif text-lg uppercase tracking-wider mb-6">REVENUE BREAKDOWN</h3>
             <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg">
@@ -171,13 +178,27 @@ export default function SubscriptionDashboard() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4">
-        <Button variant="secondary" className="bg-[#E5E7EB] text-foreground hover:bg-[#D1D5DB]">
-            All Status
-        </Button>
-        <Button variant="secondary" className="bg-[#E5E7EB] text-foreground hover:bg-[#D1D5DB]">
-            All Plan
-        </Button>
+      <div className="flex flex-wrap gap-4">
+        <Select>
+          <SelectTrigger className="w-[180px] bg-input border-none rounded-2xl">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="cancelled">Cancelled</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select>
+          <SelectTrigger className="w-[180px] bg-input border-none rounded-2xl">
+            <SelectValue placeholder="All Plan" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Plan</SelectItem>
+            <SelectItem value="monthly">Monthly</SelectItem>
+            <SelectItem value="yearly">Yearly</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Subscribers List */}

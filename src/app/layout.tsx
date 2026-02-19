@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Cinzel } from "next/font/google";
+import { Lora } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/Provider/ReduxProvider";
 
-const cinzel = Cinzel({
+const lora = Lora({
     subsets: ["latin"],
     weight: ["400", "700"],
     variable: "--font-cinzel",
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${cinzel.className} ${cinzel.variable} antialiased`}>
+            <body className={`${lora.className} ${lora.variable} antialiased`}>
                 <ReduxProvider>{children}</ReduxProvider>
             </body>
         </html>

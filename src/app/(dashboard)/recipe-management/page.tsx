@@ -8,8 +8,9 @@ import { Search, Plus, Pencil, Trash2, Spade, Heart } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { RecipeModal } from "@/components/dashboard/recipes/RecipeModal";
-import { useGetRecipesQuery } from "@/redux/features/recipe/recipeApi";
+import { useGetRecipesQuery, useDeleteRecipeMutation } from "@/redux/features/recipe/recipeApi";
 import { getImageUrl } from "@/utils/imageUrl";
+import { toast } from "sonner";
 
 export default function RecipeManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -22,7 +23,7 @@ export default function RecipeManagement() {
         phases: phase !== "all" ? phase : undefined,
     });
 
-    console.log({recipeData})
+    const [deleteRecipe] = useDeleteRecipeMutation();
 
     const recipes = recipeData?.data || [];
 
@@ -33,6 +34,19 @@ export default function RecipeManagement() {
     const handleEdit = (recipe: any) => {
         setSelectedRecipe(recipe);
         setIsEditOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (confirm("Are you sure you want to delete this recipe?")) {
+            try {
+                const res = await deleteRecipe(id).unwrap();
+                if (res.success) {
+                    toast.success(res.message || "Recipe deleted successfully");
+                }
+            } catch (error: any) {
+                toast.error(error?.data?.message || "Failed to delete recipe");
+            }
+        }
     };
 
     if (isLoading) {
@@ -149,7 +163,12 @@ export default function RecipeManagement() {
                                 >
                                     <Pencil className="w-4 h-4" />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="text-muted-foreground hover:text-destructive"
+                                    onClick={() => handleDelete(recipe._id)}
+                                >
                                     <Trash2 className="w-4 h-4" />
                                 </Button>
                             </div>

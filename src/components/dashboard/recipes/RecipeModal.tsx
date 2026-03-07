@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, Spade } from "lucide-react";
-import { useState } from "react";
+import { Plus, Trash2, Spade, Upload } from "lucide-react";
+import { useState, useRef } from "react";
+import { useCreateRecipeMutation, useUpdateRecipeMutation } from "@/redux/features/recipe/recipeApi";
+import { toast } from "sonner";
+import { getImageUrl } from "@/utils/imageUrl";
 
 interface RecipeModalProps {
     isOpen: boolean;
@@ -18,10 +21,15 @@ interface RecipeModalProps {
 export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalProps) {
     const recipe = mode === "edit" && initialData ? initialData : null;
 
+    const [createRecipe, { isLoading: isCreating }] = useCreateRecipeMutation();
+    const [updateRecipe, { isLoading: isUpdating }] = useUpdateRecipeMutation();
+
     // Form State
     const [title, setTitle] = useState(() => recipe?.title || "");
     const [description, setDescription] = useState(() => recipe?.description || "");
-    const [image, setImage] = useState(() => recipe?.image || "");
+    const [image, setImage] = useState(() => getImageUrl(recipe?.image) || "");
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [category, setCategory] = useState(() => recipe?.category || "Breakfast");
     const [phases, setPhases] = useState<string[]>(() =>
         recipe?.phases || (recipe?.phase ? [recipe.phase] : [])
@@ -43,6 +51,8 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
         carbs: recipe?.nutrition?.carbs || "",
         fat: recipe?.nutrition?.fat || "",
     }));
+    const [feelings, setFeelings] = useState<string[]>(() => recipe?.feelings || []);
+    const [nutrients, setNutrients] = useState<string[]>(() => recipe?.nutrients || []);
     const [phaseBenefits, setPhaseBenefits] = useState<Record<string, string>>(
         () => recipe?.phaseBenefits || {}
     );
@@ -74,14 +84,64 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
         setInstructions(instructions.filter((_, i) => i !== index));
     };
 
-    const handleSave = () => {
-        // Here you would typically call an API
-        console.log("Saving recipe:", {
-            title, description, image, category, phases,
-            prepTime, cookTime, servings, ingredients, instructions,
-            nutrition, phaseBenefits
-        });
-        onClose();
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImageFile(e.target.files[0]);
+            setImage(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
+    const handleSave = async () => {
+        if (!title || !category || phases.length === 0 || ingredients.some((ing: any) => !ing.name)) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
+
+        const payload = {
+            title,
+            description,
+            category,
+            phases,
+            prepTime: Number(prepTime) || 0,
+            cookTime: Number(cookTime) || 0,
+            servings: Number(servings) || 0,
+            ingredients,
+            instructions,
+            nutrition: {
+                calories: Number(nutrition.calories) || 0,
+                protein: Number(nutrition.protein) || 0,
+                carbs: Number(nutrition.carbs) || 0,
+                fat: Number(nutrition.fat) || 0,
+            },
+            feelings,
+            nutrients,
+            phaseBenefits,
+        };
+
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(payload));
+
+        if (imageFile) {
+            formData.append("images", imageFile);
+        }
+
+        try {
+            if (mode === "create") {
+                const res = await createRecipe(formData).unwrap();
+                if (res.success) {
+                    toast.success(res.message || "Recipe created successfully");
+                    onClose();
+                }
+            } else {
+                const res = await updateRecipe({ id: recipe._id, data: formData }).unwrap();
+                if (res.success) {
+                    toast.success(res.message || "Recipe updated successfully");
+                    onClose();
+                }
+            }
+        } catch (error: any) {
+            toast.error(error?.data?.message || `Failed to ${mode} recipe`);
+        }
     };
 
     return (
@@ -119,15 +179,36 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                             />
                         </div>
 
-                        {/* Image URL */}
+                        {/* Image Upload */}
                         <div className="space-y-2">
-                            <Label>Image URL</Label>
-                            <Input 
-                                placeholder="https://..." 
-                                className="bg-white border-none shadow-sm"
-                                value={image}
-                                onChange={(e) => setImage(e.target.value)}
-                            />
+                            <Label>Recipe Image</Label>
+                            <div 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="border-2 border-dashed border-white/40 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-colors"
+                            >
+                                {image ? (
+                                    <div className="relative w-full h-40 rounded-lg overflow-hidden">
+                                        <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                            <Upload className="w-8 h-8 text-white" />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                                        <span className="text-sm text-muted-foreground text-center">
+                                            Click to upload recipe image
+                                        </span>
+                                    </>
+                                )}
+                                <input 
+                                    type="file" 
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    className="hidden" 
+                                    accept="image/*"
+                                />
+                            </div>
                         </div>
 
                         {/* Category */}
@@ -426,8 +507,9 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                     <Button 
                         className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                         onClick={handleSave}
+                        disabled={isCreating || isUpdating}
                     >
-                        {mode === "create" ? "Create Recipe" : "Update Recipe"}
+                        {isCreating || isUpdating ? "Saving..." : mode === "create" ? "Create Recipe" : "Update Recipe"}
                     </Button>
                 </div>
             </DialogContent>

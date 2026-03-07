@@ -1,324 +1,73 @@
-{
-    "statusCode": 200,
-    "success": true,
-    "message": "Recipes retrieved successfully",
-    "meta": {
-        "total": 5,
-        "limit": 10,
-        "page": 1,
-        "totalPage": 1
+
+const recipeSchema = new Schema<IRecipe>(
+  {
+    title: { type: String, required: true, trim: true },
+
+    description: { type: String },
+    image: { type: String },
+
+    category: {
+      type: String,
+      enum: ["Breakfast", "Lunch", "Dinner", "Snack", "Smoothie", "Dessert"],
+      required: true,
     },
-    "data": [
+
+    phases: {
+      type: [
         {
-            "_id": "69ab475cbd0fee2601ddd373",
-            "title": "Avocado Toast with Poached Egg",
-            "description": "A healthy and filling breakfast option.",
-            "image": "/images/1772832603997-p3irzhu043a.jpeg",
-            "category": "Dinner",
-            "phases": [
-                "Follicular",
-                "Luteal"
-            ],
-            "prepTime": 10,
-            "cookTime": 5,
-            "servings": 2,
-            "ingredients": [
-                {
-                    "name": "Bread",
-                    "amount": "2",
-                    "unit": "slices"
-                },
-                {
-                    "name": "Avocado",
-                    "amount": "1",
-                    "unit": "piece"
-                },
-                {
-                    "name": "Egg",
-                    "amount": "2",
-                    "unit": "pieces"
-                },
-                {
-                    "name": "Salt",
-                    "amount": "1",
-                    "unit": "pinch"
-                },
-                {
-                    "name": "Pepper",
-                    "amount": "1",
-                    "unit": "pinch"
-                }
-            ],
-            "instructions": [
-                "Toast the bread slices until golden brown.",
-                "Mash the avocado and spread it on the toasted bread.",
-                "Poach the eggs and place them on top of the avocado.",
-                "Sprinkle salt and pepper to taste.",
-                "Serve immediately."
-            ],
-            "nutrition": {
-                "calories": 350,
-                "protein": 12,
-                "carbs": 28,
-                "fat": 20
-            },
-            "feelings": [],
-            "nutrients": [],
-            "phaseBenefits": {
-                "Follicular": "Supports energy and hormone balance.",
-                "Luteal": "Helps reduce bloating and provides protein."
-            },
-            "createdAt": "2026-03-06T21:30:04.038Z",
-            "updatedAt": "2026-03-06T21:30:04.038Z"
+          type: String,
+          enum: ["Menstrual", "Follicular", "Ovulation", "Luteal"],
         },
-        {
-            "_id": "69ab4745bd0fee2601ddd371",
-            "title": "Avocado Toast with Poached Egg",
-            "description": "A healthy and filling breakfast option.",
-            "image": "/images/1772832581603-3qpm30rnq8c.jpeg",
-            "category": "Lunch",
-            "phases": [
-                "Follicular",
-                "Luteal"
-            ],
-            "prepTime": 10,
-            "cookTime": 5,
-            "servings": 2,
-            "ingredients": [
-                {
-                    "name": "Bread",
-                    "amount": "2",
-                    "unit": "slices"
-                },
-                {
-                    "name": "Avocado",
-                    "amount": "1",
-                    "unit": "piece"
-                },
-                {
-                    "name": "Egg",
-                    "amount": "2",
-                    "unit": "pieces"
-                },
-                {
-                    "name": "Salt",
-                    "amount": "1",
-                    "unit": "pinch"
-                },
-                {
-                    "name": "Pepper",
-                    "amount": "1",
-                    "unit": "pinch"
-                }
-            ],
-            "instructions": [
-                "Toast the bread slices until golden brown.",
-                "Mash the avocado and spread it on the toasted bread.",
-                "Poach the eggs and place them on top of the avocado.",
-                "Sprinkle salt and pepper to taste.",
-                "Serve immediately."
-            ],
-            "nutrition": {
-                "calories": 350,
-                "protein": 12,
-                "carbs": 28,
-                "fat": 20
-            },
-            "feelings": [],
-            "nutrients": [],
-            "phaseBenefits": {
-                "Follicular": "Supports energy and hormone balance.",
-                "Luteal": "Helps reduce bloating and provides protein."
-            },
-            "createdAt": "2026-03-06T21:29:41.682Z",
-            "updatedAt": "2026-03-06T21:29:41.682Z"
-        },
-        {
-            "_id": "69ab4736bd0fee2601ddd36f",
-            "title": "Avocado Toast with Poached Egg",
-            "description": "A healthy and filling breakfast option.",
-            "category": "Lunch",
-            "phases": [
-                "Follicular",
-                "Luteal"
-            ],
-            "prepTime": 10,
-            "cookTime": 5,
-            "servings": 2,
-            "ingredients": [
-                {
-                    "name": "Bread",
-                    "amount": "2",
-                    "unit": "slices"
-                },
-                {
-                    "name": "Avocado",
-                    "amount": "1",
-                    "unit": "piece"
-                },
-                {
-                    "name": "Egg",
-                    "amount": "2",
-                    "unit": "pieces"
-                },
-                {
-                    "name": "Salt",
-                    "amount": "1",
-                    "unit": "pinch"
-                },
-                {
-                    "name": "Pepper",
-                    "amount": "1",
-                    "unit": "pinch"
-                }
-            ],
-            "instructions": [
-                "Toast the bread slices until golden brown.",
-                "Mash the avocado and spread it on the toasted bread.",
-                "Poach the eggs and place them on top of the avocado.",
-                "Sprinkle salt and pepper to taste.",
-                "Serve immediately."
-            ],
-            "nutrition": {
-                "calories": 350,
-                "protein": 12,
-                "carbs": 28,
-                "fat": 20
-            },
-            "feelings": [],
-            "nutrients": [],
-            "phaseBenefits": {
-                "Follicular": "Supports energy and hormone balance.",
-                "Luteal": "Helps reduce bloating and provides protein."
-            },
-            "createdAt": "2026-03-06T21:29:26.752Z",
-            "updatedAt": "2026-03-06T21:29:26.752Z"
-        },
-        {
-            "_id": "69ab386520de84cbce45ddef",
-            "title": "Avocado Toast with Poached Egg",
-            "description": "A healthy and filling breakfast option.",
-            "category": "Breakfast",
-            "phases": [
-                "Ovulation"
-            ],
-            "prepTime": 10,
-            "cookTime": 5,
-            "servings": 2,
-            "ingredients": [
-                {
-                    "name": "Bread",
-                    "amount": "2",
-                    "unit": "slices"
-                },
-                {
-                    "name": "Avocado",
-                    "amount": "1",
-                    "unit": "piece"
-                },
-                {
-                    "name": "Egg",
-                    "amount": "2",
-                    "unit": "pieces"
-                },
-                {
-                    "name": "Salt",
-                    "amount": "1",
-                    "unit": "pinch"
-                },
-                {
-                    "name": "Pepper",
-                    "amount": "1",
-                    "unit": "pinch"
-                }
-            ],
-            "instructions": [
-                "Toast the bread slices until golden brown.",
-                "Mash the avocado and spread it on the toasted bread.",
-                "Poach the eggs and place them on top of the avocado.",
-                "Sprinkle salt and pepper to taste.",
-                "Serve immediately."
-            ],
-            "nutrition": {
-                "calories": 350,
-                "protein": 12,
-                "carbs": 28,
-                "fat": 20
-            },
-            "feelings": [],
-            "nutrients": [],
-            "phaseBenefits": {
-                "Follicular": "Supports energy and hormone balance.",
-                "Luteal": "Helps reduce bloating and provides protein."
-            },
-            "createdAt": "2026-03-06T20:26:13.965Z",
-            "updatedAt": "2026-03-06T20:27:20.954Z"
-        },
-        {
-            "_id": "69ab384820de84cbce45ddeb",
-            "title": "Avocado Toast with Poached Egg",
-            "description": "A healthy and filling breakfast option.",
-            "category": "Breakfast",
-            "phases": [
-                "Follicular",
-                "Luteal"
-            ],
-            "prepTime": 10,
-            "cookTime": 5,
-            "servings": 2,
-            "ingredients": [
-                {
-                    "name": "Bread",
-                    "amount": "2",
-                    "unit": "slices"
-                },
-                {
-                    "name": "Avocado",
-                    "amount": "1",
-                    "unit": "piece"
-                },
-                {
-                    "name": "Egg",
-                    "amount": "2",
-                    "unit": "pieces"
-                },
-                {
-                    "name": "Salt",
-                    "amount": "1",
-                    "unit": "pinch"
-                },
-                {
-                    "name": "Pepper",
-                    "amount": "1",
-                    "unit": "pinch"
-                }
-            ],
-            "instructions": [
-                "Toast the bread slices until golden brown.",
-                "Mash the avocado and spread it on the toasted bread.",
-                "Poach the eggs and place them on top of the avocado.",
-                "Sprinkle salt and pepper to taste.",
-                "Serve immediately."
-            ],
-            "nutrition": {
-                "calories": 350,
-                "protein": 12,
-                "carbs": 28,
-                "fat": 20
-            },
-            "feelings": [],
-            "nutrients": [],
-            "phaseBenefits": {
-                "Follicular": "Supports energy and hormone balance.",
-                "Luteal": "Helps reduce bloating and provides protein."
-            },
-            "createdAt": "2026-03-06T20:25:44.576Z",
-            "updatedAt": "2026-03-06T20:25:44.576Z"
-        }
-    ]
-}
+      ],
+      required: true,
+    },
 
+    prepTime: { type: Number, required: true },
+    cookTime: { type: Number, required: true },
+    servings: { type: Number, required: true },
 
+    ingredients: {
+      type: [ingredientSchema],
+      required: true,
+      validate: [(val: any[]) => val.length > 0, "At least one ingredient required"],
+    },
 
+    instructions: {
+      type: [String],
+      required: true,
+      validate: [(val: string[]) => val.length > 0, "At least one instruction required"],
+    },
 
+    nutrition: nutritionSchema,
 
+    feelings: {
+      type: [String],
+      default: [],
+    },
+
+    nutrients: {
+      type: [String],
+      default: [],
+    },
+
+    phaseBenefits: {
+      type: Map,
+      of: String,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtual for full image URL
+recipeSchema.virtual('fullImage').get(function () {
+  if (!this.image) return null;
+  if (this.image.startsWith('http')) return this.image;
+  // This is a placeholder, you can use an environment variable for the base URL
+  return `${this.image}`;
+});
+
+export const Recipe = model<IRecipe, RecipeModel>("Recipe", recipeSchema);

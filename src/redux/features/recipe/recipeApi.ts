@@ -12,7 +12,30 @@ export const recipeApi = baseApi.injectEndpoints({
             },
             providesTags: ["Recipe"],
         }),
+        createRecipe: builder.mutation({
+            query: (data) => ({
+                url: "/recipe",
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["Recipe"],
+        }),
+        updateRecipe: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `/recipe/${id}`,
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["Recipe"],
+        }),
+        deleteRecipe: builder.mutation({
+            query: (id) => ({
+                url: `/recipe/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Recipe"],
+        }),
     }),
 });
 
-export const { useGetRecipesQuery } = recipeApi;
+export const { useGetRecipesQuery, useCreateRecipeMutation, useUpdateRecipeMutation, useDeleteRecipeMutation } = recipeApi;

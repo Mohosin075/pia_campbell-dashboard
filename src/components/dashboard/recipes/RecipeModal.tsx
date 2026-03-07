@@ -24,22 +24,25 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
     const [image, setImage] = useState(() => recipe?.image || "");
     const [category, setCategory] = useState(() => recipe?.category || "Breakfast");
     const [phases, setPhases] = useState<string[]>(() =>
-        recipe?.phase ? [recipe.phase] : []
+        recipe?.phases || (recipe?.phase ? [recipe.phase] : [])
     );
     const [prepTime, setPrepTime] = useState(() =>
-        recipe?.time ? recipe.time.replace(" min", "") : ""
+        recipe?.prepTime?.toString() || (recipe?.time ? recipe.time.replace(" min", "") : "")
     );
-    const [cookTime, setCookTime] = useState("");
-    const [servings, setServings] = useState("");
+    const [cookTime, setCookTime] = useState(() => recipe?.cookTime?.toString() || "");
+    const [servings, setServings] = useState(() => recipe?.servings?.toString() || "");
     const [ingredients, setIngredients] = useState(
         () => recipe?.ingredients || [{ name: "", amount: "", unit: "" }]
     );
     const [instructions, setInstructions] = useState<string[]>(
         () => recipe?.instructions || [""]
     );
-    const [nutrition, setNutrition] = useState(() =>
-        recipe?.nutrition || { calories: "", protein: "", carbs: "", fat: "" }
-    );
+    const [nutrition, setNutrition] = useState(() => ({
+        calories: recipe?.nutrition?.calories || "",
+        protein: recipe?.nutrition?.protein || "",
+        carbs: recipe?.nutrition?.carbs || "",
+        fat: recipe?.nutrition?.fat || "",
+    }));
     const [phaseBenefits, setPhaseBenefits] = useState<Record<string, string>>(
         () => recipe?.phaseBenefits || {}
     );

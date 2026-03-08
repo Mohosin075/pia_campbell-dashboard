@@ -14,38 +14,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useGetSubscriptionStatsQuery } from "@/redux/features/dashboard/dashboardApi";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SubscriptionDashboard() {
-  const stats = [
-    {
-      title: "Total Revenue",
-      value: "$214.97",
-      icon: DollarSign,
-      color: "text-[#10B981]", // Green
-      bg: "bg-[#FDE8ED]",
-    },
-    {
-      title: "Active Subscriptions",
-      value: "3",
-      icon: Users,
-      color: "text-[#F48FB1]", // Pink
-      bg: "bg-[#FDE8ED]",
-    },
-    {
-      title: "Churn Rate",
-      value: "25.0%",
-      icon: TrendingUp,
-      color: "text-[#EF4444]", // Red
-      bg: "bg-[#FDE8ED]",
-    },
-    {
-      title: "MRR",
-      value: "$14.99",
-      icon: CreditCard,
-      color: "text-[#F59E0B]", // Orange/Yellow
-      bg: "bg-[#FDE8ED]",
-    },
-  ];
+  const { data: statsData, isLoading, isError } = useGetSubscriptionStatsQuery(undefined);
 
   const subscribers = [
     {
@@ -102,6 +75,70 @@ export default function SubscriptionDashboard() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="flex justify-between items-center">
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-32 w-full" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !statsData?.success) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <p className="text-destructive">Error loading subscription statistics. Please try again later.</p>
+      </div>
+    );
+  }
+
+  const stats = statsData.data;
+
+  const summaryStats = [
+    {
+      title: "Total Revenue",
+      value: `$${stats.totalRevenue.toLocaleString()}`,
+      icon: DollarSign,
+      color: "text-[#10B981]", // Green
+      bg: "bg-[#FDE8ED]",
+    },
+    {
+      title: "Active Subscriptions",
+      value: stats.activeSubscriptions.toString(),
+      icon: Users,
+      color: "text-[#F48FB1]", // Pink
+      bg: "bg-[#FDE8ED]",
+    },
+    {
+      title: "Churn Rate",
+      value: `${stats.churnRate.toFixed(1)}%`,
+      icon: TrendingUp,
+      color: "text-[#EF4444]", // Red
+      bg: "bg-[#FDE8ED]",
+    },
+    {
+      title: "MRR",
+      value: `$${stats.mrr.toLocaleString()}`,
+      icon: CreditCard,
+      color: "text-[#F59E0B]", // Orange/Yellow
+      bg: "bg-[#FDE8ED]",
+    },
+  ];
+
   return (
     <div className="p-8 space-y-8">
       {/* Header */}
@@ -119,7 +156,7 @@ export default function SubscriptionDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {stats.map((stat, i) => (
+        {summaryStats.map((stat, i) => (
           <Card key={i} className="border-none shadow-sm bg-secondary backdrop-blur-sm">
             <CardContent className="p-6 flex justify-between items-start">
               <div>
@@ -140,20 +177,19 @@ export default function SubscriptionDashboard() {
         <Card className="border-none shadow-sm bg-secondary/20 p-6">
             <h3 className="font-serif text-lg uppercase tracking-wider mb-6">PLAN DISTRIBUTION</h3>
             <div className="space-y-6">
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>Monthly (1)</span>
-                        <span>33%</span>
+                {stats.planDistribution.map((plan: any, index: number) => (
+                    <div key={plan.name} className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                            <span>{plan.name} ({plan.count})</span>
+                            <span>{plan.percentage}%</span>
+                        </div>
+                        <Progress 
+                          value={plan.percentage} 
+                          className="h-2 bg-white" 
+                          indicatorClassName={index === 0 ? "bg-[#F48FB1]" : "bg-[#F8BBD0]"} 
+                        />
                     </div>
-                    <Progress value={33} className="h-2 bg-white" indicatorClassName="bg-[#F48FB1]" />
-                </div>
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>Yearly (2)</span>
-                        <span>67%</span>
-                    </div>
-                    <Progress value={67} className="h-2 bg-white" indicatorClassName="bg-[#F8BBD0]" />
-                </div>
+                ))}
             </div>
         </Card>
 
@@ -163,15 +199,15 @@ export default function SubscriptionDashboard() {
             <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg">
                     <span className="text-sm font-medium">Monthly Subscriptions</span>
-                    <span className="font-bold">$14.99</span>
+                    <span className="font-bold">${stats.revenueBreakdown.monthlySubscriptions.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg">
                     <span className="text-sm font-medium">Yearly Subscriptions</span>
-                    <span className="font-bold">$199.98</span>
+                    <span className="font-bold">${stats.revenueBreakdown.yearlySubscriptions.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-[#D1FAE5] rounded-lg text-[#065F46]">
                     <span className="text-sm font-bold">Total Revenue</span>
-                    <span className="font-bold">$214.97</span>
+                    <span className="font-bold">${stats.revenueBreakdown.totalRevenue.toLocaleString()}</span>
                 </div>
             </div>
         </Card>

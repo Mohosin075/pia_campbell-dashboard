@@ -1,128 +1,28 @@
 {
     "statusCode": 200,
     "success": true,
-    "message": "Dashboard statistics retrieved successfully",
+    "message": "Subscription statistics retrieved successfully",
     "data": {
-        "totalUsers": 2,
-        "totalViews": 0,
-        "totalFavorites": 0,
-        "activeUsers": 1,
-        "phaseSpecificEngagement": [
+        "totalRevenue": 214.97,
+        "activeSubscriptions": 3,
+        "churnRate": 25,
+        "mrr": 14.99,
+        "planDistribution": [
             {
-                "phase": "Menstrual",
-                "recipes": 1,
-                "views": 0,
-                "favorites": 0,
-                "saved": 0,
-                "engagementRate": 0
+                "name": "Monthly",
+                "count": 1,
+                "percentage": 33.3
             },
             {
-                "phase": "Follicular",
-                "recipes": 4,
-                "views": 0,
-                "favorites": 0,
-                "saved": 0,
-                "engagementRate": 0
-            },
-            {
-                "phase": "Ovulation",
-                "recipes": 3,
-                "views": 0,
-                "favorites": 0,
-                "saved": 0,
-                "engagementRate": 0
-            },
-            {
-                "phase": "Luteal",
-                "recipes": 3,
-                "views": 0,
-                "favorites": 0,
-                "saved": 0,
-                "engagementRate": 0
-            }
-        ],
-        "phaseDistribution": [
-            {
-                "phase": "Menstrual",
-                "recipes": 1,
-                "percentage": 16.7
-            },
-            {
-                "phase": "Follicular",
-                "recipes": 4,
+                "name": "Yearly",
+                "count": 2,
                 "percentage": 66.7
-            },
-            {
-                "phase": "Ovulation",
-                "recipes": 3,
-                "percentage": 50
-            },
-            {
-                "phase": "Luteal",
-                "recipes": 3,
-                "percentage": 50
             }
         ],
-        "categoryDistribution": [
-            {
-                "category": "Smoothie",
-                "recipes": 1,
-                "percentage": 16.7
-            },
-            {
-                "category": "Breakfast",
-                "recipes": 1,
-                "percentage": 16.7
-            },
-            {
-                "category": "Dinner",
-                "recipes": 1,
-                "percentage": 16.7
-            },
-            {
-                "category": "Lunch",
-                "recipes": 3,
-                "percentage": 50
-            }
-        ],
-        "recentActivity": [
-            {
-                "user": "web.mohosin@gmail.com",
-                "action": "Created grocery list",
-                "timestamp": "2026-03-06T20:36:19.647Z"
-            }
-        ],
-        "monthlyGrowth": [
-            {
-                "month": "Oct",
-                "users": 0,
-                "revenue": 0
-            },
-            {
-                "month": "Nov",
-                "users": 0,
-                "revenue": 0
-            },
-            {
-                "month": "Dec",
-                "users": 0,
-                "revenue": 0
-            },
-            {
-                "month": "Jan",
-                "users": 0,
-                "revenue": 0
-            },
-            {
-                "month": "Feb",
-                "users": 0,
-                "revenue": 0
-            },
-            {
-                "month": "Mar",
-                "users": 2,
-                "revenue": 0
-            }
-        ]
+        "revenueBreakdown": {
+            "monthlySubscriptions": 14.99,
+            "yearlySubscriptions": 199.98,
+            "totalRevenue": 214.97
+        }
     }
 }

@@ -39,6 +39,15 @@ export const dashboardApi = baseApi.injectEndpoints({
             providesTags: ["Dashboard"],
         }),
 
+        getAnalyticsOverview: builder.query({
+            query: () => ({
+                url: "/dashboard/analytics-overview",
+                method: "GET",
+                credentials: "include",
+            }),
+            providesTags: ["Dashboard"],
+        }),
+
         getAllSubscriptions: builder.query({
             query: (params: { page?: number; limit?: number; status?: string; plan?: string } = {}) => ({
                 url: "/subscription/admin/all-subscriptions",
@@ -83,6 +92,7 @@ export const {
     useGetAdminDashboardStatsQuery, 
     useGetDashboardStatsQuery, 
     useGetSubscriptionStatsQuery, 
+    useGetAnalyticsOverviewQuery,
     useGetAllSubscriptionsQuery,
     useGetSubscriptionPlansQuery,
     useUpdateSubscriptionPlanMutation,

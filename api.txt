@@ -1,47 +1,70 @@
 {
     "statusCode": 200,
     "success": true,
-    "message": "All subscriptions retrieved successfully",
-    "meta": {
-        "page": 1,
-        "limit": 10,
-        "total": 2,
-        "totalPage": 1
-    },
-    "data": [
-        {
-            "_id": "demo_1",
-            "userId": {
-                "name": "Jane Smith",
-                "email": "jane@example.com"
-            },
-            "planId": {
-                "name": "Monthly",
-                "price": 14.99,
-                "interval": "month"
-            },
-            "status": "active",
-            "currentPeriodStart": "2025-12-15T00:00:00.000Z",
-            "currentPeriodEnd": "2026-02-15T00:00:00.000Z",
-            "cancelAtPeriodEnd": false,
-            "paymentMethod": "Visa **** 4242"
+    "message": "Analytics overview retrieved successfully",
+    "data": {
+        "totalUsers": {
+            "count": 2,
+            "trend": 0
         },
-        {
-            "_id": "demo_2",
-            "userId": {
-                "name": "Mike Ross",
-                "email": "mike@example.com"
+        "activeSubscriptions": {
+            "count": 0,
+            "trend": 0
+        },
+        "recipeCompletions": {
+            "count": 0,
+            "trend": 18.5
+        },
+        "phaseEngagementTrend": [
+            {
+                "label": "Week 1",
+                "menstrual": 30,
+                "follicular": 45,
+                "ovulatory": 60,
+                "luteal": 40
             },
-            "planId": {
-                "name": "Yearly",
-                "price": 199.98,
-                "interval": "year"
+            {
+                "label": "Week 2",
+                "menstrual": 35,
+                "follicular": 50,
+                "ovulatory": 75,
+                "luteal": 45
             },
-            "status": "active",
-            "currentPeriodStart": "2025-01-01T00:00:00.000Z",
-            "currentPeriodEnd": "2026-01-01T00:00:00.000Z",
-            "cancelAtPeriodEnd": false,
-            "paymentMethod": "Mastercard **** 8888"
-        }
-    ]
+            {
+                "label": "Week 3",
+                "menstrual": 25,
+                "follicular": 55,
+                "ovulatory": 85,
+                "luteal": 50
+            },
+            {
+                "label": "Week 4",
+                "menstrual": 40,
+                "follicular": 40,
+                "ovulatory": 70,
+                "luteal": 55
+            }
+        ],
+        "topPhaseRecipes": [
+            {
+                "_id": "69aca0441cc0a0226c65445e",
+                "title": "newwwwwwwww",
+                "phase": "Follicular",
+                "saves": 1
+            },
+            {
+                "_id": "69ab4736bd0fee2601ddd36f",
+                "title": "Avocado Toast with Poached Egg",
+                "phase": "Follicular",
+                "saves": 1
+            }
+        ],
+        "recentActivity": [
+            {
+                "user": "System",
+                "action": "Version 2.4.0 deployed successfully",
+                "timestamp": "2026-03-08T21:22:14.034Z"
+            }
+        ]
+    }
 }

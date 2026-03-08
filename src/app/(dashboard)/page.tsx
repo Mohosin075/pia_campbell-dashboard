@@ -3,55 +3,49 @@
 import PhaseEngagementTrend from "@/components/dashboard/analytics/PhaseEngagementTrend";
 import { Button } from "@/components/ui/button";
 import { Users, CheckCircle2, Utensils, Heart, Diamond, Flame } from "lucide-react";
-
-const topPhaseRecipes = [
-    {
-        title: "Spinach & Lentil Stew",
-        phase: "Menstrual (Iron Rich)",
-        badge: "1,240",
-        color: "#FDE8ED",
-        icon: Heart,
-    },
-    {
-        title: "Zucchini Noodle Salad",
-        phase: "Follicular (Light)",
-        badge: "982",
-        color: "#E0F2FE",
-        icon: Diamond,
-    },
-    {
-        title: "Sweet Potato Quinoa",
-        phase: "Luteal (Complex Carbs)",
-        badge: "874",
-        color: "#FEF3C7",
-        icon: Flame,
-    },
-];
-
-const recentActivity = [
-    {
-        title: "New Premium Subscription from Sarah J.",
-        time: "2 minutes ago",
-        emphasized: "Premium Subscription",
-    },
-    {
-        title: 'Recipe "Avocado Toast with Seeds" was edited by Content Admin',
-        time: "14 minutes ago",
-        emphasized: "Content Admin",
-    },
-    {
-        title: "System Update: Version 2.4.0 deployed successfully",
-        time: "1 hour ago",
-        emphasized: "Version 2.4.0",
-    },
-    {
-        title: "Monthly report is now ready for download",
-        time: "3 hours ago",
-        emphasized: "Monthly report",
-    },
-];
+import { useGetAnalyticsOverviewQuery } from "@/redux/features/dashboard/dashboardApi";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
+    const { data: analyticsData, isLoading, isError } = useGetAnalyticsOverviewQuery(undefined);
+
+    if (isLoading) {
+        return (
+            <div className="p-6 space-y-8">
+                <div className="flex justify-between items-end">
+                    <div className="space-y-2">
+                        <Skeleton className="h-10 w-64" />
+                        <Skeleton className="h-4 w-96" />
+                    </div>
+                    <div className="flex gap-3">
+                        <Skeleton className="h-10 w-32" />
+                        <Skeleton className="h-10 w-32" />
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {[1, 2, 3].map((i) => (
+                        <Skeleton key={i} className="h-32 w-full" />
+                    ))}
+                </div>
+                <Skeleton className="h-[400px] w-full" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                </div>
+            </div>
+        );
+    }
+
+    if (isError || !analyticsData?.success) {
+        return (
+            <div className="p-6 flex items-center justify-center min-h-[400px]">
+                <p className="text-destructive font-medium">Error loading analytics overview. Please try again later.</p>
+            </div>
+        );
+    }
+
+    const data = analyticsData.data;
+
     return (
         <div className="p-6 space-y-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -75,9 +69,11 @@ export default function Dashboard() {
                         <span className="text-primary/80 font-medium">Total Users</span>
                         <Users className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <h2 className="text-4xl font-serif text-primary font-bold">12,540</h2>
+                    <h2 className="text-4xl font-serif text-primary font-bold">{data.totalUsers.count.toLocaleString()}</h2>
                     <p className="text-xs text-muted-foreground mt-2">
-                        <span className="text-primary font-bold">↗ +12%</span> vs last month
+                        <span className={`font-bold ${data.totalUsers.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                            {data.totalUsers.trend >= 0 ? "↗" : "↘"} {Math.abs(data.totalUsers.trend)}%
+                        </span> vs last month
                     </p>
                 </div>
 
@@ -86,9 +82,11 @@ export default function Dashboard() {
                         <span className="text-primary/80 font-medium">Active Subscriptions</span>
                         <CheckCircle2 className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <h2 className="text-4xl font-serif text-primary font-bold">8,230</h2>
+                    <h2 className="text-4xl font-serif text-primary font-bold">{data.activeSubscriptions.count.toLocaleString()}</h2>
                     <p className="text-xs text-muted-foreground mt-2">
-                        <span className="text-primary font-bold">↗ +5%</span> vs last month
+                        <span className={`font-bold ${data.activeSubscriptions.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                            {data.activeSubscriptions.trend >= 0 ? "↗" : "↘"} {Math.abs(data.activeSubscriptions.trend)}%
+                        </span> vs last month
                     </p>
                 </div>
 
@@ -97,9 +95,11 @@ export default function Dashboard() {
                         <span className="text-primary/80 font-medium">Recipe Completions</span>
                         <Utensils className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <h2 className="text-4xl font-serif text-primary font-bold">45,800</h2>
+                    <h2 className="text-4xl font-serif text-primary font-bold">{data.recipeCompletions.count.toLocaleString()}</h2>
                     <p className="text-xs text-muted-foreground mt-2">
-                        <span className="text-primary font-bold">↗ +18%</span> vs last month
+                        <span className={`font-bold ${data.recipeCompletions.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                            {data.recipeCompletions.trend >= 0 ? "↗" : "↘"} {Math.abs(data.recipeCompletions.trend)}%
+                        </span> vs last month
                     </p>
                 </div>
             </div>
@@ -114,27 +114,29 @@ export default function Dashboard() {
                         ● Live Traffic
                     </div>
                 </div>
-                <PhaseEngagementTrend />
+                <PhaseEngagementTrend data={data.phaseEngagementTrend} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="items-center justify-between mb-4 flex">
                         <h2 className="text-lg font-serif text-primary uppercase tracking-widest">Top Phase Recipes</h2>
                         <button className="text-xs font-semibold text-primary tracking-[0.18em] uppercase">
                             View All
                         </button>
                     </div>
                     <div className="space-y-3">
-                        {topPhaseRecipes.map((recipe) => (
+                        {data.topPhaseRecipes.map((recipe: any, index: number) => (
                             <div
-                                key={recipe.title}
-                                className="flex items-center justify-between rounded-xl bg-muted/40 px-4 py-3"
-                                style={{ backgroundColor: recipe.color }}
+                                key={recipe._id}
+                                className="flex items-center justify-between rounded-xl px-4 py-3"
+                                style={{ 
+                                    backgroundColor: index === 0 ? "#FDE8ED" : index === 1 ? "#E0F2FE" : "#FEF3C7" 
+                                }}
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 text-primary">
-                                        <recipe.icon className="h-5 w-5" />
+                                        {index === 0 ? <Heart className="h-5 w-5" /> : index === 1 ? <Diamond className="h-5 w-5" /> : <Flame className="h-5 w-5" />}
                                     </div>
                                     <div>
                                         <div className="text-sm font-semibold text-foreground">{recipe.title}</div>
@@ -142,7 +144,7 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                                 <div className="text-right text-xs uppercase tracking-[0.18em] text-primary">
-                                    <div className="text-sm font-semibold">{recipe.badge}</div>
+                                    <div className="text-sm font-semibold">{recipe.saves}</div>
                                     <div className="mt-0.5">Saves</div>
                                 </div>
                             </div>
@@ -155,20 +157,20 @@ export default function Dashboard() {
                         <h2 className="text-lg font-serif text-primary uppercase tracking-widest">Recent Activity</h2>
                     </div>
                     <div className="space-y-4">
-                        {recentActivity.map((item, index) => (
-                            <div key={item.title}>
+                        {data.recentActivity.map((item: any, index: number) => (
+                            <div key={index}>
                                 <div className="flex items-start gap-3">
                                     <span className="mt-1 h-2 w-2 rounded-full bg-primary/60" />
                                     <div>
                                         <p className="text-sm text-primary">
-                                            {item.title.split(item.emphasized)[0]}
-                                            <span className="font-semibold">{item.emphasized}</span>
-                                            {item.title.split(item.emphasized)[1]}
+                                            <span className="font-semibold">{item.user}</span>: {item.action}
                                         </p>
-                                        <p className="text-xs text-muted-foreground mt-1">{item.time}</p>
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            {new Date(item.timestamp).toLocaleString()}
+                                        </p>
                                     </div>
                                 </div>
-                                {index !== recentActivity.length - 1 && (
+                                {index !== data.recentActivity.length - 1 && (
                                     <div className="mt-3 border-t border-[#FDE8ED]" />
                                 )}
                             </div>

@@ -49,6 +49,25 @@ export const dashboardApi = baseApi.injectEndpoints({
             providesTags: ["Dashboard"],
         }),
 
+        getSubscriptionPlans: builder.query({
+            query: () => ({
+                url: "/subscription/admin/plans",
+                method: "GET",
+                credentials: "include",
+            }),
+            providesTags: ["Dashboard"],
+        }),
+
+        updateSubscriptionPlan: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `/subscription/admin/plans/${id}`,
+                method: "PATCH",
+                body,
+                credentials: "include",
+            }),
+            invalidatesTags: ["Dashboard"],
+        }),
+
         getEventAnalytics: builder.query({
             query: (eventId: string) => ({
                 url: `/stats/analytics/${eventId}`,
@@ -59,4 +78,13 @@ export const dashboardApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetAdminUsersStatsQuery, useGetAdminDashboardStatsQuery, useGetDashboardStatsQuery, useGetSubscriptionStatsQuery, useGetAllSubscriptionsQuery, useGetEventAnalyticsQuery } = dashboardApi;
+export const { 
+    useGetAdminUsersStatsQuery, 
+    useGetAdminDashboardStatsQuery, 
+    useGetDashboardStatsQuery, 
+    useGetSubscriptionStatsQuery, 
+    useGetAllSubscriptionsQuery,
+    useGetSubscriptionPlansQuery,
+    useUpdateSubscriptionPlanMutation,
+    useGetEventAnalyticsQuery 
+} = dashboardApi;

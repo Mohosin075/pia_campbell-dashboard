@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Check, X, Star } from "lucide-react";
+import { Check, X, Star, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useGetSubscriptionPlansQuery, useUpdateSubscriptionPlanMutation } from "@/redux/features/dashboard/dashboardApi";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface PlanFeature {
   id: string;
@@ -26,61 +29,39 @@ interface Plan {
 
 export default function SubscriptionEditPage() {
   const router = useRouter();
-  const [plans, setPlans] = useState<Plan[]>([
-    {
-      id: "free",
-      name: "FREE PLAN",
-      billingCycle: "Monthly Billing",
-      price: "14.99",
-      isPopular: false,
-      features: [
-        { id: "1", text: "Unlimited recipe access" },
-        { id: "2", text: "Personalized meal plans" },
-        { id: "3", text: "Grocery list generator" },
-        { id: "4", text: "Cycle tracking" },
-        { id: "5", text: "Health insights" },
-      ]
-    },
-    {
-      id: "yearly",
-      name: "YEARLY PLAN",
-      billingCycle: "Yearly Billing",
-      price: "99.99",
-      isPopular: true,
-      description: "$8.33/month when billed annually",
-      features: [
-        { id: "1", text: "Everything in Monthly" },
-        { id: "2", text: "Save 44% annually" },
-        { id: "3", text: "Priority support" },
-        { id: "4", text: "Early access to new features" },
-        { id: "5", text: "Exclusive wellness content" },
-        { id: "6", text: "Personal nutrition coach" },
-      ]
-    },
-    {
-      id: "monthly",
-      name: "MONTHLY PLAN",
-      billingCycle: "Monthly Billing",
-      price: "14.99",
-      isPopular: false,
-      features: [
-        { id: "1", text: "Unlimited recipe access" },
-        { id: "2", text: "Personalized meal plans" },
-        { id: "3", text: "Grocery list generator" },
-        { id: "4", text: "Cycle tracking" },
-        { id: "5", text: "Health insights" },
-      ]
+  const { data: plansData, isLoading, isError } = useGetSubscriptionPlansQuery(undefined);
+  const [updatePlanMutation, { isLoading: isUpdating }] = useUpdateSubscriptionPlanMutation();
+  const [plans, setPlans] = useState<Plan[]>([]);
+
+  useEffect(() => {
+    if (plansData?.success && Array.isArray(plansData.data) && plans.length === 0) {
+      const mappedPlans = plansData.data.map((p: any) => ({
+        id: p._id,
+        name: p.name,
+        billingCycle: p.interval === 'year' ? 'Yearly Billing' : 'Monthly Billing',
+        price: p.price.toString(),
+        isPopular: p.isPopular || false,
+        description: p.description || (p.interval === 'year' ? `$${(p.price / 12).toFixed(2)}/month when billed annually` : ""),
+        features: p.features.map((f: string, idx: number) => ({ id: idx.toString(), text: f }))
+      }));
+      
+      // Defer the state update to prevent "cascading renders" warning
+      const timer = setTimeout(() => {
+        setPlans(mappedPlans);
+      }, 0);
+      
+      return () => clearTimeout(timer);
     }
-  ]);
+  }, [plansData, plans.length]);
 
   const updatePlan = (planId: string, field: keyof Plan, value: any) => {
-    setPlans(plans.map(plan => 
+    setPlans(prevPlans => prevPlans.map(plan => 
       plan.id === planId ? { ...plan, [field]: value } : plan
     ));
   };
 
   const updateFeature = (planId: string, featureId: string, text: string) => {
-    setPlans(plans.map(plan => {
+    setPlans(prevPlans => prevPlans.map(plan => {
       if (plan.id !== planId) return plan;
       return {
         ...plan,
@@ -90,7 +71,7 @@ export default function SubscriptionEditPage() {
   };
 
   const addFeature = (planId: string) => {
-    setPlans(plans.map(plan => {
+    setPlans(prevPlans => prevPlans.map(plan => {
       if (plan.id !== planId) return plan;
       return {
         ...plan,
@@ -100,7 +81,7 @@ export default function SubscriptionEditPage() {
   };
 
   const removeFeature = (planId: string, featureId: string) => {
-    setPlans(plans.map(plan => {
+    setPlans(prevPlans => prevPlans.map(plan => {
       if (plan.id !== planId) return plan;
       return {
         ...plan,
@@ -109,11 +90,59 @@ export default function SubscriptionEditPage() {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saving plans:", plans);
-    // Add toast or API call here
-    router.push("/subscription");
+  const handleSave = async () => {
+    // Basic validation
+    const invalidPricePlan = plans.find(plan => isNaN(parseFloat(plan.price)));
+    if (invalidPricePlan) {
+      toast.error(`Invalid price for ${invalidPricePlan.name}`);
+      return;
+    }
+
+    try {
+      const updatePromises = plans.map(plan => {
+        const body = {
+          name: plan.name,
+          price: parseFloat(plan.price),
+          isPopular: plan.isPopular,
+          features: plan.features.map(f => f.text),
+          description: plan.description
+        };
+        return updatePlanMutation({ id: plan.id, body }).unwrap();
+      });
+
+      await Promise.all(updatePromises);
+      toast.success("All plans updated successfully");
+      router.push("/subscription");
+    } catch (err: any) {
+      console.error("Failed to update plans:", err);
+      const errorMessage = err?.data?.message || "Failed to update some plans. Please try again.";
+      toast.error(errorMessage);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto space-y-8">
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton className="h-[400px] w-full" />
+          <Skeleton className="h-[400px] w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <p className="text-destructive font-medium">Error loading subscription plans.</p>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 pb-24">
@@ -269,14 +298,23 @@ export default function SubscriptionEditPage() {
               variant="outline" 
               className="flex-1 rounded-xl h-12 border-gray-200" 
               onClick={() => router.push("/subscription")}
+              disabled={isUpdating}
             >
               Cancel
             </Button>
             <Button 
               className="flex-1 rounded-xl h-12 bg-[#F48FB1] hover:bg-[#F48FB1]/90 text-white" 
               onClick={handleSave}
+              disabled={isUpdating}
             >
-              Save Changes
+              {isUpdating ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </div>
+              ) : (
+                "Save Changes"
+              )}
             </Button>
         </div>
       </div>

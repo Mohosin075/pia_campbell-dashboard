@@ -6,14 +6,6 @@ export enum USER_STATUS {
     DELETED = "deleted",
 }
 
-interface UserQueryParams {
-    page?: number;
-    limit?: number;
-    role?: string;
-    status?: USER_STATUS;
-    searchTerm?: string;
-}
-
 interface UserResponse {
     success: boolean;
     message: string;
@@ -37,6 +29,15 @@ interface UpdateUserStatusRequest {
     status: USER_STATUS;
 }
 
+interface UserQueryParams {
+    page?: number;
+    limit?: number;
+    role?: string;
+    status?: USER_STATUS;
+    searchTerm?: string;
+    subscriptionTier?: string;
+}
+
 export const userApi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
@@ -49,6 +50,7 @@ export const userApi = baseApi.injectEndpoints({
                 if (params.role) queryParams.role = params.role;
                 if (params.status) queryParams.status = params.status;
                 if (params.searchTerm) queryParams.searchTerm = params.searchTerm;
+                if (params.subscriptionTier) queryParams.subscriptionTier = params.subscriptionTier;
 
                 return {
                     url: "/user",

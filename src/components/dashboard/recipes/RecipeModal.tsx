@@ -20,9 +20,9 @@ const recipeSchema = z.object({
     image: z.string().min(1, "Recipe image is required"),
     category: z.string().min(1, "Category is required"),
     phases: z.array(z.string()).min(1, "Select at least one phase"),
-    prepTime: z.string().min(1, "Prep time is required"),
-    cookTime: z.string().min(1, "Cook time is required"),
-    servings: z.string().min(1, "Servings are required"),
+    prepTime: z.coerce.number().min(1, "Prep time is required"),
+    cookTime: z.coerce.number().min(1, "Cook time is required"),
+    servings: z.coerce.number().min(1, "Servings are required"),
     ingredients: z.array(z.object({
         name: z.string().min(1, "Ingredient name is required"),
         amount: z.string().min(1, "Amount is required"),
@@ -32,15 +32,48 @@ const recipeSchema = z.object({
         value: z.string().min(1, "Instruction cannot be empty")
     })).min(1, "At least one instruction is required"),
     nutrition: z.object({
-        calories: z.string().optional().or(z.number()),
-        protein: z.string().optional().or(z.number()),
-        carbs: z.string().optional().or(z.number()),
-        fat: z.string().optional().or(z.number()),
+        calories: z.coerce.number().optional(),
+        protein: z.coerce.number().optional(),
+        carbs: z.coerce.number().optional(),
+        fat: z.coerce.number().optional(),
     }).optional(),
     feelings: z.array(z.string()).optional(),
     nutrients: z.array(z.string()).optional(),
     phaseBenefits: z.record(z.string(), z.string()).optional(),
 });
+
+interface Ingredient {
+    name: string;
+    amount: string;
+    unit: string;
+}
+
+interface Nutrition {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+}
+
+interface Recipe {
+    _id?: string;
+    title: string;
+    description?: string;
+    image?: string;
+    category: "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Smoothie" | "Dessert";
+    phases: ("Menstrual" | "Follicular" | "Ovulation" | "Luteal")[];
+    prepTime: number;
+    cookTime: number;
+    servings: number;
+    ingredients: Ingredient[];
+    instructions: string[];
+    nutrition?: Nutrition;
+    feelings?: string[];
+    nutrients?: string[];
+    phaseBenefits?: Record<string, string>;
+    phase?: string;
+    time?: string;
+}
 
 type RecipeFormData = z.infer<typeof recipeSchema>;
 
@@ -48,7 +81,7 @@ interface RecipeModalProps {
     isOpen: boolean;
     onClose: () => void;
     mode: "create" | "edit";
-    initialData?: any;
+    initialData?: Recipe;
 }
 
 export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalProps) {
@@ -77,16 +110,20 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
             image: recipe?.image || "",
             category: recipe?.category || "Breakfast",
             phases: recipe?.phases || (recipe?.phase ? [recipe.phase] : []),
-            prepTime: recipe?.prepTime || (recipe?.time ? recipe.time.replace(" min", "") : ""),
-            cookTime: recipe?.cookTime || "",
-            servings: recipe?.servings || "",
-            ingredients: recipe?.ingredients || [{ name: "", amount: "", unit: "" }],
-            instructions: recipe?.instructions?.map((step: string) => ({ value: step })) || [{ value: "" }],
+            prepTime: recipe?.prepTime ? Number(recipe.prepTime) : (recipe?.time ? Number(recipe.time.replace(" min", "")) : 0),
+            cookTime: Number(recipe?.cookTime) || 0,
+            servings: Number(recipe?.servings) || 0,
+            ingredients: recipe?.ingredients?.map((ing) => ({
+                name: ing.name || "",
+                amount: ing.amount?.toString() || "",
+                unit: ing.unit || "",
+            })) || [{ name: "", amount: "", unit: "" }],
+            instructions: recipe?.instructions?.map((step) => ({ value: step })) || [{ value: "" }],
             nutrition: {
-                calories: recipe?.nutrition?.calories || "",
-                protein: recipe?.nutrition?.protein || "",
-                carbs: recipe?.nutrition?.carbs || "",
-                fat: recipe?.nutrition?.fat || "",
+                calories: Number(recipe?.nutrition?.calories) || 0,
+                protein: Number(recipe?.nutrition?.protein) || 0,
+                carbs: Number(recipe?.nutrition?.carbs) || 0,
+                fat: Number(recipe?.nutrition?.fat) || 0,
             },
             feelings: recipe?.feelings || [],
             nutrients: recipe?.nutrients || [],
@@ -116,16 +153,20 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                 image: recipe?.image || "",
                 category: recipe?.category || "Breakfast",
                 phases: recipe?.phases || (recipe?.phase ? [recipe.phase] : []),
-                prepTime: recipe?.prepTime || (recipe?.time ? recipe.time.replace(" min", "") : ""),
-                cookTime: recipe?.cookTime || "",
-                servings: recipe?.servings || "",
-                ingredients: recipe?.ingredients || [{ name: "", amount: "", unit: "" }],
-                instructions: recipe?.instructions?.map((step: string) => ({ value: step })) || [{ value: "" }],
+                prepTime: recipe?.prepTime ? Number(recipe.prepTime) : (recipe?.time ? Number(recipe.time.replace(" min", "")) : 0),
+                cookTime: Number(recipe?.cookTime) || 0,
+                servings: Number(recipe?.servings) || 0,
+                ingredients: recipe?.ingredients?.map((ing) => ({
+                    name: ing.name || "",
+                    amount: ing.amount?.toString() || "",
+                    unit: ing.unit || "",
+                })) || [{ name: "", amount: "", unit: "" }],
+                instructions: recipe?.instructions?.map((step) => ({ value: step })) || [{ value: "" }],
                 nutrition: {
-                    calories: recipe?.nutrition?.calories || "",
-                    protein: recipe?.nutrition?.protein || "",
-                    carbs: recipe?.nutrition?.carbs || "",
-                    fat: recipe?.nutrition?.fat || "",
+                    calories: Number(recipe?.nutrition?.calories) || 0,
+                    protein: Number(recipe?.nutrition?.protein) || 0,
+                    carbs: Number(recipe?.nutrition?.carbs) || 0,
+                    fat: Number(recipe?.nutrition?.fat) || 0,
                 },
                 feelings: recipe?.feelings || [],
                 nutrients: recipe?.nutrients || [],
@@ -160,16 +201,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
     const onSave = async (data: RecipeFormData) => {
         const payload = {
             ...data,
-            prepTime: Number(data.prepTime) || 0,
-            cookTime: Number(data.cookTime) || 0,
-            servings: Number(data.servings) || 0,
             instructions: data.instructions.map(i => i.value),
-            nutrition: {
-                calories: Number(data.nutrition?.calories) || 0,
-                protein: Number(data.nutrition?.protein) || 0,
-                carbs: Number(data.nutrition?.carbs) || 0,
-                fat: Number(data.nutrition?.fat) || 0,
-            },
         };
 
         const formData = new FormData();
@@ -376,7 +408,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         type="button"
                                         variant="secondary" 
                                         size="sm" 
-                                        onClick={() => appendIngredient({ name: "", amount: "", unit: "" })}
+                                        onClick={() => appendIngredient({ name: "", amount: '0', unit: "" })}
                                         className="bg-primary text-primary-foreground hover:bg-primary/90 h-7"
                                     >
                                         <Plus className="w-3 h-3 mr-1" /> Add

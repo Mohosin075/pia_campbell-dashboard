@@ -129,13 +129,19 @@ export default function RecipeManagement() {
                 {recipes.length > 0 ? (
                     recipes.map((recipe: any) => (
                         <div key={recipe._id} className="bg-secondary rounded-xl p-4 flex gap-6 items-center">
-                            <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden">
-                                <Image 
-                                    src={getImageUrl(recipe.image)} 
-                                    alt={recipe.title} 
-                                    fill 
-                                    className="object-cover" 
-                                />
+                            <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden bg-gray-200">
+                                {recipe.image ? (
+                                    <Image 
+                                        src={getImageUrl(recipe.image)} 
+                                        alt={recipe.title} 
+                                        fill 
+                                        className="object-cover" 
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs text-center p-2">
+                                        No Image
+                                    </div>
+                                )}
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-serif text-lg font-medium text-foreground">{recipe.title}</h3>

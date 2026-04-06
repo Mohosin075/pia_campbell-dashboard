@@ -196,13 +196,13 @@ export default function SubscriptionEditPage() {
               </div>
               
               <div className="mt-4 space-y-2">
-                <Label className="text-sm text-foreground/70">Price (USD)</Label>
+                <Label className="text-sm text-foreground/70">Price (USD) - <span className="text-[10px] text-muted-foreground italic">Fixed</span></Label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</div>
                   <Input 
                     value={plan.price}
-                    onChange={(e) => updatePlan(plan.id, 'price', e.target.value)}
-                    className="pl-7 bg-[#FDE8ED] border-none text-foreground font-medium h-10"
+                    readOnly
+                    className="pl-7 bg-gray-100 border-none text-muted-foreground font-medium h-10 cursor-not-allowed"
                   />
                 </div>
                 {plan.description && (

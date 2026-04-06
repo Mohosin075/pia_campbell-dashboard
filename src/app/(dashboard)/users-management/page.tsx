@@ -112,8 +112,9 @@ export default function UserManagement() {
                                 {user.profile ? (
                                     <Image src={getImageUrl(user.profile)} alt={user.name || "User"} fill className="object-cover" />
                                 ) : (
-                                    <div className="w-full h-full bg-gray-400 flex items-center justify-center text-white text-xl font-bold">
-                                        {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                                    <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center text-muted-foreground leading-none">
+                                        <span className="text-lg font-bold">{(user.name || user.email || "?").charAt(0).toUpperCase()}</span>
+                                        <span className="text-[8px] uppercase font-bold mt-0.5">No Image</span>
                                     </div>
                                 )}
                             </div>

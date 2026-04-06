@@ -1,0 +1,78 @@
+Type 'Resolver<{ title: string; image: string; category: string; phases: string[]; prepTime: unknown; cookTime: unknown; servings: unknown; ingredients: { name: string; amount: unknown; unit: string; }[]; instructions: { value: string; }[]; description?: string | undefined; nutrition?: { ...; } | undefined; feelings?: str...' is not assignable to type 'Resolver<{ title: string; image: string; category: string; phases: string[]; prepTime: string; cookTime: string; servings: string; ingredients: { name: string; amount: string; unit: string; }[]; instructions: { ...; }[]; ... 4 more ...; phaseBenefits?: Record<...> | undefined; }, any, { ...; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ title: string; image: string; category: string; phases: string[]; prepTime: string; cookTime: string; servings: string; ingredients: { name: string; amount: string; unit: string; }[]; instructions: { ...; }[]; ... 4 more ...; phaseBenefits?: Record<...> | undefined; }>' is not assignable to type 'ResolverOptions<{ title: string; image: string; category: string; phases: string[]; prepTime: unknown; cookTime: unknown; servings: unknown; ingredients: { name: string; amount: unknown; unit: string; }[]; instructions: { value: string; }[]; description?: string | undefined; nutrition?: { ...; } | undefined; feeling...'.
+      Types of property 'names' are incompatible.
+        Type 'string[] | undefined' is not assignable to type '("title" | "description" | "image" | "category" | "phases" | "prepTime" | "cookTime" | "servings" | "ingredients" | "instructions" | "nutrition" | "feelings" | "nutrients" | "phaseBenefits")[] | undefined'.
+          Type 'string[]' is not assignable to type '("title" | "description" | "image" | "category" | "phases" | "prepTime" | "cookTime" | "servings" | "ingredients" | "instructions" | "nutrition" | "feelings" | "nutrients" | "phaseBenefits")[]'.
+            Type 'string' is not assignable to type '"title" | "description" | "image" | "category" | "phases" | "prepTime" | "cookTime" | "servings" | "ingredients" | "instructions" | "nutrition" | "feelings" | "nutrients" | "phaseBenefits"'.ts(2322)
+(property) resolver?: Resolver<{
+    title: string;
+    image: string;
+    category: string;
+    phases: string[];
+    prepTime: string;
+    cookTime: string;
+    servings: string;
+    ingredients: {
+        name: string;
+        amount: string;
+        unit: string;
+    }[];
+    instructions: {
+        value: string;
+    }[];
+    description?: string | undefined;
+    nutrition?: {
+        calories?: string | undefined;
+        protein?: string | undefined;
+        carbs?: string | undefined;
+        fat?: string | undefined;
+    } | undefined;
+    feelings?: string[] | undefined;
+    nutrients?: string[] | undefined;
+    phaseBenefits?: Record<string, string> | undefined;
+}, any, TFieldValues> | undefined
+
+
+
+
+
+
+
+
+
+
+
+
+
+Argument of type '(data: RecipeFormData) => Promise<void>' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
+  Types of parameters 'data' and 'data' are incompatible.
+    Type 'TFieldValues' is not assignable to type '{ title: string; image: string; category: string; phases: string[]; prepTime: string; cookTime: string; servings: string; ingredients: { name: string; amount: string; unit: string; }[]; instructions: { value: string; }[]; ... 4 more ...; phaseBenefits?: Record<...> | undefined; }'.
+      Type 'FieldValues' is missing the following properties from type '{ title: string; image: string; category: string; phases: string[]; prepTime: string; cookTime: string; servings: string; ingredients: { name: string; amount: string; unit: string; }[]; instructions: { value: string; }[]; ... 4 more ...; phaseBenefits?: Record<...> | undefined; }': title, image, category, phases, and 5 more.ts(2345)
+const onSave: (data: {
+    title: string;
+    image: string;
+    category: string;
+    phases: string[];
+    prepTime: string;
+    cookTime: string;
+    servings: string;
+    ingredients: {
+        name: string;
+        amount: string;
+        unit: string;
+    }[];
+    instructions: {
+        value: string;
+    }[];
+    description?: string | undefined;
+    nutrition?: {
+        calories?: string | undefined;
+        protein?: string | undefined;
+        carbs?: string | undefined;
+        fat?: string | undefined;
+    } | undefined;
+    feelings?: string[] | undefined;
+    nutrients?: string[] | undefined;
+    phaseBenefits?: Record<string, string> | undefined;
+}) => Promise<void>

@@ -20,7 +20,7 @@ export default function UserManagement() {
     const { data: usersResponse, isLoading, isFetching } = useGetUsersQuery({
         searchTerm: searchTerm || undefined,
         status: statusFilter !== "all" ? statusFilter as USER_STATUS : undefined,
-        subscriptionTier: subscriptionFilter !== "all" ? subscriptionFilter : undefined,
+        subscribe: subscriptionFilter === "premium" ? true : subscriptionFilter === "free" ? false : undefined,
         page,
         limit: 10,
     });
@@ -74,13 +74,12 @@ export default function UserManagement() {
                 </div>
                 <Select value={subscriptionFilter} onValueChange={setSubscriptionFilter}>
                     <SelectTrigger className="w-[180px] bg-input border-none rounded-2xl">
-                        <SelectValue placeholder="All Subscription" />
+                        <SelectValue placeholder="All Users" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Subscription</SelectItem>
-                        <SelectItem value="free">Free</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="yearly">Yearly</SelectItem>
+                        <SelectItem value="all">All Users</SelectItem>
+                        <SelectItem value="premium">Premium Users</SelectItem>
+                        <SelectItem value="free">Free Users</SelectItem>
                     </SelectContent>
                 </Select>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -146,8 +145,9 @@ export default function UserManagement() {
 
                             {/* Top Right Badges */}
                             <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                                <Badge className="bg-primary/20 text-primary hover:bg-primary/20 font-normal border-none flex items-center gap-1">
-                                    <Crown className="w-3 h-3" /> {user.subscriptionTier || 'free'}
+                                <Badge className={`${user.subscribe ? "bg-primary/20 text-primary" : "bg-gray-100 text-gray-500"} hover:bg-opacity-20 font-normal border-none flex items-center gap-1`}>
+                                    <Crown className="w-3 h-3" /> 
+                                    {user.subscribe ? 'Premium' : 'Free'}
                                 </Badge>
                                 <Button 
                                     variant="outline" 

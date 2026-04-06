@@ -35,7 +35,7 @@ interface UserQueryParams {
     role?: string;
     status?: USER_STATUS;
     searchTerm?: string;
-    subscriptionTier?: string;
+    subscribe?: boolean;
 }
 
 export const userApi = baseApi.injectEndpoints({
@@ -50,7 +50,7 @@ export const userApi = baseApi.injectEndpoints({
                 if (params.role) queryParams.role = params.role;
                 if (params.status) queryParams.status = params.status;
                 if (params.searchTerm) queryParams.searchTerm = params.searchTerm;
-                if (params.subscriptionTier) queryParams.subscriptionTier = params.subscriptionTier;
+                if (params.subscribe !== undefined) queryParams.subscribe = params.subscribe;
 
                 return {
                     url: "/user",

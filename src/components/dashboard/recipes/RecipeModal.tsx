@@ -20,9 +20,9 @@ const recipeSchema = z.object({
     image: z.string().min(1, "Recipe image is required"),
     category: z.string().min(1, "Category is required"),
     phases: z.array(z.string()).min(1, "Select at least one phase"),
-    prepTime: z.coerce.number().min(1, "Prep time is required"),
-    cookTime: z.coerce.number().min(1, "Cook time is required"),
-    servings: z.coerce.number().min(1, "Servings are required"),
+    prepTime: z.number().min(1, "Prep time is required"),
+    cookTime: z.number().min(1, "Cook time is required"),
+    servings: z.number().min(1, "Servings are required"),
     ingredients: z.array(z.object({
         name: z.string().min(1, "Ingredient name is required"),
         amount: z.string().min(1, "Amount is required"),
@@ -32,10 +32,10 @@ const recipeSchema = z.object({
         value: z.string().min(1, "Instruction cannot be empty")
     })).min(1, "At least one instruction is required"),
     nutrition: z.object({
-        calories: z.coerce.number().optional(),
-        protein: z.coerce.number().optional(),
-        carbs: z.coerce.number().optional(),
-        fat: z.coerce.number().optional(),
+        calories: z.number().optional(),
+        protein: z.number().optional(),
+        carbs: z.number().optional(),
+        fat: z.number().optional(),
     }).optional(),
     feelings: z.array(z.string()).optional(),
     nutrients: z.array(z.string()).optional(),
@@ -49,10 +49,10 @@ interface Ingredient {
 }
 
 interface Nutrition {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
 }
 
 interface Recipe {
@@ -368,7 +368,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         type="number" 
                                         placeholder="15" 
                                         className={`bg-white border-none shadow-sm ${errors.prepTime ? "ring-2 ring-red-500" : ""}`}
-                                        {...register("prepTime")}
+                                        {...register("prepTime", { valueAsNumber: true })}
                                     />
                                     {errors.prepTime && (
                                         <p className="text-[10px] text-red-500">{errors.prepTime.message}</p>
@@ -380,7 +380,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         type="number" 
                                         placeholder="30" 
                                         className={`bg-white border-none shadow-sm ${errors.cookTime ? "ring-2 ring-red-500" : ""}`}
-                                        {...register("cookTime")}
+                                        {...register("cookTime", { valueAsNumber: true })}
                                     />
                                     {errors.cookTime && (
                                         <p className="text-[10px] text-red-500">{errors.cookTime.message}</p>
@@ -392,7 +392,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         type="number" 
                                         placeholder="4" 
                                         className={`bg-white border-none shadow-sm ${errors.servings ? "ring-2 ring-red-500" : ""}`}
-                                        {...register("servings")}
+                                        {...register("servings", { valueAsNumber: true })}
                                     />
                                     {errors.servings && (
                                         <p className="text-[10px] text-red-500">{errors.servings.message}</p>
@@ -522,7 +522,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         <Input 
                                             placeholder="0" 
                                             className="bg-white border-none shadow-sm"
-                                            {...register("nutrition.calories")}
+                                            {...register("nutrition.calories", { valueAsNumber: true })}
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -530,7 +530,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         <Input 
                                             placeholder="0" 
                                             className="bg-white border-none shadow-sm"
-                                            {...register("nutrition.protein")}
+                                            {...register("nutrition.protein", { valueAsNumber: true })}
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -538,7 +538,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         <Input 
                                             placeholder="0" 
                                             className="bg-white border-none shadow-sm"
-                                            {...register("nutrition.carbs")}
+                                            {...register("nutrition.carbs", { valueAsNumber: true })}
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -546,7 +546,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         <Input 
                                             placeholder="0" 
                                             className="bg-white border-none shadow-sm"
-                                            {...register("nutrition.fat")}
+                                            {...register("nutrition.fat", { valueAsNumber: true })}
                                         />
                                     </div>
                                 </div>

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Spade, Upload } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useCreateRecipeMutation, useUpdateRecipeMutation } from "@/redux/features/recipe/recipeApi";
 import { toast } from "sonner";
 import { getImageUrl } from "@/utils/imageUrl";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -179,6 +180,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
 
     const categories = ["Breakfast", "Lunch", "Dinner", "Snack", "Smoothie", "Dessert"];
     const allPhases = ["Menstrual", "Follicular", "Ovulation", "Luteal"];
+    const commonUnits = ["g", "kg", "ml", "l", "tsp", "tbsp", "cup", "oz", "lb", "piece", "pinch", "to taste", "unit", "can", "pack"];
 
     const togglePhase = (phase: string) => {
         const currentPhases = phases || [];
@@ -236,7 +238,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-full max-h-[90vh] flex flex-col p-0 bg-secondary backdrop-blur-sm border-none max-w-[90vw] sm:max-w-[50vw]">
+            <DialogContent className="w-full max-h-[90vh] flex flex-col p-0 bg-secondary backdrop-blur-sm border-none max-w-[90vw] sm:max-w-[60vw]">
                 <form onSubmit={handleSubmit(onSave)} className="flex flex-col h-full overflow-hidden">
                     <DialogHeader className="p-6 pb-2">
                         <div className="flex justify-between items-center">
@@ -408,7 +410,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                         type="button"
                                         variant="secondary" 
                                         size="sm" 
-                                        onClick={() => appendIngredient({ name: "", amount: '0', unit: "" })}
+                                        onClick={() => appendIngredient({ name: "", amount: '0', unit: "g" })}
                                         className="bg-primary text-primary-foreground hover:bg-primary/90 h-7"
                                     >
                                         <Plus className="w-3 h-3 mr-1" /> Add
@@ -417,21 +419,39 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                 <div className="space-y-2">
                                     {ingredientFields.map((field, i) => (
                                         <div key={field.id} className="flex flex-col gap-1">
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 items-center">
+                                                <Input 
+                                                    placeholder="Amt" 
+                                                    className={`w-16 bg-white border-none shadow-sm ${errors.ingredients?.[i]?.amount ? "ring-1 ring-red-500" : ""}`}
+                                                    {...register(`ingredients.${i}.amount` as const)}
+                                                />
+                                                <div className="w-32">
+                                                    <Controller
+                                                        name={`ingredients.${i}.unit` as const}
+                                                        control={control}
+                                                        render={({ field: selectField }) => (
+                                                            <Select 
+                                                                onValueChange={selectField.onChange} 
+                                                                value={selectField.value}
+                                                            >
+                                                                <SelectTrigger className="bg-white border-none shadow-sm h-9">
+                                                                    <SelectValue placeholder="Unit" />
+                                                                </SelectTrigger>
+                                                                <SelectContent className="bg-white">
+                                                                    {commonUnits.map(unit => (
+                                                                        <SelectItem key={unit} value={unit} className="capitalize">
+                                                                            {unit}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        )}
+                                                    />
+                                                </div>
                                                 <Input 
                                                     placeholder="Ingredient name" 
                                                     className={`flex-1 bg-white border-none shadow-sm ${errors.ingredients?.[i]?.name ? "ring-1 ring-red-500" : ""}`}
                                                     {...register(`ingredients.${i}.name` as const)}
-                                                />
-                                                <Input 
-                                                    placeholder="Amount" 
-                                                    className={`w-24 bg-white border-none shadow-sm ${errors.ingredients?.[i]?.amount ? "ring-1 ring-red-500" : ""}`}
-                                                    {...register(`ingredients.${i}.amount` as const)}
-                                                />
-                                                <Input 
-                                                    placeholder="Unit" 
-                                                    className={`w-24 bg-white border-none shadow-sm ${errors.ingredients?.[i]?.unit ? "ring-1 ring-red-500" : ""}`}
-                                                    {...register(`ingredients.${i}.unit` as const)}
                                                 />
                                                 <Button
                                                     type="button"
@@ -444,16 +464,16 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                                                 </Button>
                                             </div>
                                             <div className="flex gap-2 px-1">
+                                                {errors.ingredients?.[i]?.amount && (
+                                                    <p className="text-[10px] text-red-500 w-16 text-center">{errors.ingredients[i]?.amount?.message}</p>
+                                                )}
+                                                {errors.ingredients?.[i]?.unit && (
+                                                    <p className="text-[10px] text-red-500 w-32 text-center">{errors.ingredients[i]?.unit?.message}</p>
+                                                )}
                                                 {errors.ingredients?.[i]?.name && (
                                                     <p className="text-[10px] text-red-500 flex-1">{errors.ingredients[i]?.name?.message}</p>
                                                 )}
-                                                {errors.ingredients?.[i]?.amount && (
-                                                    <p className="text-[10px] text-red-500 w-24 text-center">{errors.ingredients[i]?.amount?.message}</p>
-                                                )}
-                                                {errors.ingredients?.[i]?.unit && (
-                                                    <p className="text-[10px] text-red-500 w-24 text-center">{errors.ingredients[i]?.unit?.message}</p>
-                                                )}
-                                                <div className="w-8" /> {/* Placeholder for the delete button width */}
+                                                <div className="w-8" />
                                             </div>
                                         </div>
                                     ))}

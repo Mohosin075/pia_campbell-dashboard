@@ -58,7 +58,7 @@ export default function RecipeManagement() {
             {/* Header */}
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-serif text-foreground uppercase tracking-widest">Recipe Management dsf</h1>
+                    <h1 className="text-3xl font-serif text-foreground uppercase tracking-widest">Recipe Management</h1>
                     <p className="text-muted-foreground mt-2">
                         {recipeData?.meta?.total || 0} recipes found
                     </p>

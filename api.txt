@@ -1,70 +1,99 @@
-{
-    "statusCode": 200,
-    "success": true,
-    "message": "Analytics overview retrieved successfully",
-    "data": {
-        "totalUsers": {
-            "count": 2,
-            "trend": 0
+import { Schema, model } from "mongoose";
+import { IRecipe, RecipeModel } from "./recipe.interface";
+
+const ingredientSchema = new Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    amount: { type: String, required: true },
+    unit: { type: String, required: true },
+  },
+  { _id: false }
+);
+
+const nutritionSchema = new Schema(
+  {
+    calories: { type: Number, default: 0 },
+    protein: { type: Number, default: 0 },
+    carbs: { type: Number, default: 0 },
+    fat: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
+const recipeSchema = new Schema<IRecipe>(
+  {
+    title: { type: String, required: true, trim: true },
+
+    description: { type: String },
+    image: { type: String },
+
+    category: {
+      type: String,
+      enum: ["Breakfast", "Lunch", "Dinner", "Snack", "Smoothie", "Dessert"],
+      required: true,
+    },
+
+    phases: {
+      type: [
+        {
+          type: String,
+          enum: ["Menstrual", "Follicular", "Ovulation", "Luteal"],
         },
-        "activeSubscriptions": {
-            "count": 0,
-            "trend": 0
-        },
-        "recipeCompletions": {
-            "count": 0,
-            "trend": 18.5
-        },
-        "phaseEngagementTrend": [
-            {
-                "label": "Week 1",
-                "menstrual": 30,
-                "follicular": 45,
-                "ovulatory": 60,
-                "luteal": 40
-            },
-            {
-                "label": "Week 2",
-                "menstrual": 35,
-                "follicular": 50,
-                "ovulatory": 75,
-                "luteal": 45
-            },
-            {
-                "label": "Week 3",
-                "menstrual": 25,
-                "follicular": 55,
-                "ovulatory": 85,
-                "luteal": 50
-            },
-            {
-                "label": "Week 4",
-                "menstrual": 40,
-                "follicular": 40,
-                "ovulatory": 70,
-                "luteal": 55
-            }
-        ],
-        "topPhaseRecipes": [
-            {
-                "_id": "69aca0441cc0a0226c65445e",
-                "title": "newwwwwwwww",
-                "phase": "Follicular",
-                "saves": 1
-            },
-            {
-                "_id": "69ab4736bd0fee2601ddd36f",
-                "title": "Avocado Toast with Poached Egg",
-                "phase": "Follicular",
-                "saves": 1
-            }
-        ],
-        "recentActivity": [
-            {
-                "user": "System",
-                "action": "Version 2.4.0 deployed successfully",
-                "timestamp": "2026-03-08T21:22:14.034Z"
-            }
-        ]
-    }
-}
+      ],
+      required: true,
+    },
+
+    prepTime: { type: Number, required: true },
+    cookTime: { type: Number, required: true },
+    servings: { type: Number, required: true },
+
+    ingredients: {
+      type: [ingredientSchema],
+      required: true,
+      validate: [(val: any[]) => val.length > 0, "At least one ingredient required"],
+    },
+
+    instructions: {
+      type: [String],
+      required: true,
+      validate: [(val: string[]) => val.length > 0, "At least one instruction required"],
+    },
+
+    nutrition: nutritionSchema,
+
+    feelings: {
+      type: [String],
+      default: [],
+    },
+
+    nutrients: {
+      type: [String],
+      default: [],
+    },
+
+    phaseBenefits: {
+      type: Map,
+      of: String,
+    },
+
+    views: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtual for full image URL
+recipeSchema.virtual('fullImage').get(function () {
+  if (!this.image) return null;
+  if (this.image.startsWith('http')) return this.image;
+  // This is a placeholder, you can use an environment variable for the base URL
+  return `${this.image}`;
+});
+
+export const Recipe = model<IRecipe, RecipeModel>("Recipe", recipeSchema);

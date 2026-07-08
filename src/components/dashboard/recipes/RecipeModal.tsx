@@ -173,7 +173,7 @@ export function RecipeModal({ isOpen, onClose, mode, initialData }: RecipeModalP
                 nutrients: recipe?.nutrients || [],
                 phaseBenefits: recipe?.phaseBenefits || {},
             });
-            setImage(getImageUrl(recipe?.image) || "");
+            setImage(getImageUrl(recipe?.image || (recipe as any)?.fullImage) || "");
             setImageFile(null);
         }
     }, [isOpen, recipe, reset]);

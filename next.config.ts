@@ -9,32 +9,11 @@ const apiHostname = apiUrl?.hostname;
 const remotePatterns = [
     {
         protocol: "https",
-        hostname: "buddi.script.s3.ap-southeast-1.amazonaws.com",
-        pathname: "/image/**",
+        hostname: "**",
     },
     {
         protocol: "http",
-        hostname: "buddi.script.s3.ap-southeast-1.amazonaws.com",
-        pathname: "/image/**",
-    },
-    ...(apiHostname
-        ? [
-              {
-                  protocol: apiProtocol,
-                  hostname: apiHostname,
-                  pathname: "/**",
-              },
-          ]
-        : []),
-    {
-        protocol: "http",
-        hostname: "localhost",
-        pathname: "/**",
-    },
-    {
-        protocol: "https",
-        hostname: "localhost",
-        pathname: "/**",
+        hostname: "**",
     },
 ];
 

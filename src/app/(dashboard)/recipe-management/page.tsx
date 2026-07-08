@@ -5,13 +5,39 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Plus, Pencil, Trash2, Spade, Heart, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Spade, Heart, Loader2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Utensils } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { RecipeModal } from "@/components/dashboard/recipes/RecipeModal";
 import { useGetRecipesQuery, useDeleteRecipeMutation } from "@/redux/features/recipe/recipeApi";
 import { getImageUrl } from "@/utils/imageUrl";
 import { toast } from "sonner";
+
+function RecipeCardImage({ recipe }: { recipe: any }) {
+    const [imgError, setImgError] = useState(false);
+    const rawImage = recipe?.image || recipe?.fullImage;
+    const finalSrc = rawImage ? getImageUrl(rawImage) : "";
+
+    if (!finalSrc || imgError) {
+        return (
+            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground text-xs text-center p-2 bg-secondary/60 border border-border/40 rounded-lg">
+                <Utensils className="w-5 h-5 mb-1 opacity-50" />
+                <span>No Image</span>
+            </div>
+        );
+    }
+
+    return (
+        <Image 
+            src={finalSrc} 
+            alt={recipe?.title || "Recipe"} 
+            fill 
+            sizes="96px"
+            className="object-cover transition-transform duration-300 hover:scale-105"
+            onError={() => setImgError(true)}
+        />
+    );
+}
 
 export default function RecipeManagement() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -228,19 +254,8 @@ export default function RecipeManagement() {
                     ) : recipes.length > 0 ? (
                         recipes.map((recipe: any) => (
                             <div key={recipe._id} className="bg-secondary rounded-xl p-4 flex gap-6 items-center transition-all hover:shadow-md">
-                                <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden bg-gray-200">
-                                    {recipe.image ? (
-                                        <Image 
-                                            src={getImageUrl(recipe.image)} 
-                                            alt={recipe.title} 
-                                            fill 
-                                            className="object-cover" 
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs text-center p-2">
-                                            No Image
-                                        </div>
-                                    )}
+                                <div className="relative w-24 h-24 rounded-lg shrink-0 overflow-hidden bg-gray-200 shadow-inner">
+                                    <RecipeCardImage recipe={recipe} />
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-serif text-lg font-medium text-foreground">{recipe.title}</h3>

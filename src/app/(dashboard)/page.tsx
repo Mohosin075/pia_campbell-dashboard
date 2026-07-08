@@ -2,12 +2,18 @@
 
 import PhaseEngagementTrend from "@/components/dashboard/analytics/PhaseEngagementTrend";
 import { Button } from "@/components/ui/button";
-import { Users, CheckCircle2, Utensils, Heart, Diamond, Flame } from "lucide-react";
+import { Users, CheckCircle2, Utensils, Heart, Diamond, Flame, Download, FileText, Printer, Loader2, Calendar } from "lucide-react";
 import { useGetAnalyticsOverviewQuery } from "@/redux/features/dashboard/dashboardApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Dashboard() {
-    const { data: analyticsData, isLoading, isError } = useGetAnalyticsOverviewQuery(undefined);
+    const [timeframe, setTimeframe] = useState("30");
+    const [isReportOpen, setIsReportOpen] = useState(false);
+    const { data: analyticsData, isLoading, isFetching, isError } = useGetAnalyticsOverviewQuery({ days: Number(timeframe) });
 
     if (isLoading) {
         return (
@@ -46,19 +52,87 @@ export default function Dashboard() {
 
     const data = analyticsData.data;
 
+    const handleDownloadCSV = () => {
+        if (!data) return;
+        const csvRows = [
+            ["Metric", "Count", "Trend (%) vs Previous Period"],
+            ["Total Users", data.totalUsers.count, data.totalUsers.trend],
+            ["Active Subscriptions", data.activeSubscriptions.count, data.activeSubscriptions.trend],
+            ["Recipe Completions / Views", data.recipeCompletions.count, data.recipeCompletions.trend],
+            [],
+            ["Top Saved Recipes by Phase"],
+            ["Title", "Phase", "Saves Count"]
+        ];
+        data.topPhaseRecipes.forEach((r: any) => {
+            csvRows.push([r.title, r.phase, r.saves]);
+        });
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `analytics_report_last_${timeframe}_days.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("CSV Report downloaded successfully!");
+    };
+
+    const handleDownloadJSON = () => {
+        if (!data) return;
+        const exportData = {
+            generatedAt: new Date().toISOString(),
+            timeframeDays: timeframe,
+            metrics: {
+                totalUsers: data.totalUsers,
+                activeSubscriptions: data.activeSubscriptions,
+                recipeCompletions: data.recipeCompletions
+            },
+            topPhaseRecipes: data.topPhaseRecipes,
+            recentActivity: data.recentActivity
+        };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+        const link = document.createElement("a");
+        link.setAttribute("href", dataStr);
+        link.setAttribute("download", `analytics_report_last_${timeframe}_days.json`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("JSON Report downloaded successfully!");
+    };
+
     return (
         <div className="p-6 space-y-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-serif text-primary uppercase tracking-widest">Analytics Overview</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-serif text-primary uppercase tracking-widest">Analytics Overview</h1>
+                        {isFetching && !isLoading && (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-pulse">
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Updating...
+                            </span>
+                        )}
+                    </div>
                     <p className="text-muted-foreground mt-2">Real-time performance metrics for the cycle-syncing nutrition platform.</p>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="text-primary border-primary hover:bg-primary hover:text-white">
-                        Last 30 Days
-                    </Button>
-                    <Button className="bg-primary hover:bg-primary/90 text-white">
-                        Generate Report
+                <div className="flex items-center gap-3">
+                    <Select value={timeframe} onValueChange={setTimeframe}>
+                        <SelectTrigger className="w-[150px] bg-background border-primary text-primary font-medium rounded-xl hover:bg-primary/5 transition-all">
+                            <Calendar className="w-4 h-4 mr-2 text-primary" />
+                            <SelectValue placeholder="Timeframe" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="7">Last 7 Days</SelectItem>
+                            <SelectItem value="30">Last 30 Days</SelectItem>
+                            <SelectItem value="90">Last 90 Days</SelectItem>
+                            <SelectItem value="365">This Year</SelectItem>
+                            <SelectItem value="0">All Time</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button 
+                        className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm px-5"
+                        onClick={() => setIsReportOpen(true)}
+                    >
+                        <FileText className="w-4 h-4 mr-2" /> Generate Report
                     </Button>
                 </div>
             </div>
@@ -178,6 +252,101 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Executive Report Modal */}
+            <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
+                <DialogContent className="max-w-2xl bg-card border-border rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-serif text-primary uppercase tracking-wider flex items-center gap-2">
+                            <FileText className="w-6 h-6" /> Executive Analytics Report
+                        </DialogTitle>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Timeframe: <span className="font-semibold text-foreground">{timeframe === "7" ? "Last 7 Days" : timeframe === "30" ? "Last 30 Days" : timeframe === "90" ? "Last 90 Days" : timeframe === "365" ? "This Year" : "All Time"}</span> • Generated on {new Date().toLocaleDateString()}
+                        </p>
+                    </DialogHeader>
+
+                    {data && (
+                        <div className="space-y-6 my-4">
+                            {/* Key Metrics Summary */}
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-secondary/60 p-4 rounded-xl border border-border/50 text-center">
+                                    <p className="text-xs text-muted-foreground">Total Users</p>
+                                    <p className="text-2xl font-serif font-bold text-primary mt-1">{data.totalUsers.count.toLocaleString()}</p>
+                                    <p className={`text-[10px] font-bold mt-1 ${data.totalUsers.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                                        {data.totalUsers.trend >= 0 ? "+" : ""}{data.totalUsers.trend}% vs prev
+                                    </p>
+                                </div>
+                                <div className="bg-secondary/60 p-4 rounded-xl border border-border/50 text-center">
+                                    <p className="text-xs text-muted-foreground">Active Subscriptions</p>
+                                    <p className="text-2xl font-serif font-bold text-primary mt-1">{data.activeSubscriptions.count.toLocaleString()}</p>
+                                    <p className={`text-[10px] font-bold mt-1 ${data.activeSubscriptions.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                                        {data.activeSubscriptions.trend >= 0 ? "+" : ""}{data.activeSubscriptions.trend}% vs prev
+                                    </p>
+                                </div>
+                                <div className="bg-secondary/60 p-4 rounded-xl border border-border/50 text-center">
+                                    <p className="text-xs text-muted-foreground">Recipe Views</p>
+                                    <p className="text-2xl font-serif font-bold text-primary mt-1">{data.recipeCompletions.count.toLocaleString()}</p>
+                                    <p className={`text-[10px] font-bold mt-1 ${data.recipeCompletions.trend >= 0 ? "text-primary" : "text-destructive"}`}>
+                                        {data.recipeCompletions.trend >= 0 ? "+" : ""}{data.recipeCompletions.trend}% vs prev
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Top Saved Recipes Summary */}
+                            <div className="bg-secondary/40 rounded-xl p-4 border border-border/50">
+                                <h3 className="text-sm font-serif font-semibold text-foreground uppercase tracking-wide mb-3">Top Phase Recipes</h3>
+                                <div className="space-y-2">
+                                    {data.topPhaseRecipes && data.topPhaseRecipes.length > 0 ? (
+                                        data.topPhaseRecipes.map((r: any, idx: number) => (
+                                            <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-border/40 last:border-0">
+                                                <span className="font-medium text-foreground">{r.title} <span className="text-muted-foreground">({r.phase})</span></span>
+                                                <span className="font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{r.saves} saves</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-xs text-muted-foreground text-center py-2">No phase recipe data available for this period.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2 justify-between items-center border-t border-border pt-4 mt-2">
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-xl flex-1 sm:flex-initial"
+                                onClick={handleDownloadCSV}
+                            >
+                                <Download className="w-3.5 h-3.5 mr-1.5 text-primary" /> Export CSV
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-xl flex-1 sm:flex-initial"
+                                onClick={handleDownloadJSON}
+                            >
+                                <FileText className="w-3.5 h-3.5 mr-1.5 text-primary" /> Export JSON
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-xl flex-1 sm:flex-initial hidden sm:flex"
+                                onClick={() => window.print()}
+                            >
+                                <Printer className="w-3.5 h-3.5 mr-1.5 text-primary" /> Print
+                            </Button>
+                        </div>
+                        <Button 
+                            className="bg-primary hover:bg-primary/90 text-white rounded-xl w-full sm:w-auto px-6"
+                            onClick={() => setIsReportOpen(false)}
+                        >
+                            Close
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

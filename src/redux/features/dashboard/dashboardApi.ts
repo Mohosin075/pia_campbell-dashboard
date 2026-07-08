@@ -40,9 +40,10 @@ export const dashboardApi = baseApi.injectEndpoints({
         }),
 
         getAnalyticsOverview: builder.query({
-            query: () => ({
+            query: (params: { days?: number | string } = {}) => ({
                 url: "/dashboard/analytics-overview",
                 method: "GET",
+                params,
                 credentials: "include",
             }),
             providesTags: ["Dashboard"],

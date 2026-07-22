@@ -12,7 +12,7 @@ services:
     env_file:
       - path: .env.local
         required: false
-      - path: .env`
+      - path: .env
         required: false
     environment:
       - NODE_ENV=production

@@ -47,7 +47,7 @@ jobs:
             echo "🚀 Starting Dashboard Deployment..."
 
             # Navigate to project directory (or clone if missing)
-            TARGET_DIR=${{ secrets.VPS_DASHBOARD_PATH || '~/dashboard' }}
+            TARGET_DIR=${{ secrets.VPS_DASHBOARD_PATH || '/home/ubuntu/projects/pia_campbell-dashboard' }}
             if [ ! -d "$TARGET_DIR" ]; then
               echo "📁 Creating target directory: $TARGET_DIR"
               git clone https://github.com/${{ github.repository }}.git "$TARGET_DIR"

@@ -18,6 +18,7 @@ const remotePatterns = [
 ];
 
 const nextConfig: NextConfig = {
+    output: "standalone",
     images: {
         remotePatterns: remotePatterns as NonNullable<NextConfig["images"]>["remotePatterns"],
         unoptimized: true,

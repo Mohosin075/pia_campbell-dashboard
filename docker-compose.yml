@@ -1,0 +1,19 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BASEURL: ${NEXT_PUBLIC_BASEURL:-http://localhost:5002}
+    container_name: ascela_dashboard
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3001}:3000"
+    env_file:
+      - path: .env.local
+        required: false
+      - path: .env
+        required: false
+    environment:
+      - NODE_ENV=production
+      - PORT=3000

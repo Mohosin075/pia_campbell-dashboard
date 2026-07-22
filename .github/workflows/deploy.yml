@@ -1,4 +1,4 @@
-# Automated VPS Deployment Workflow - v3
+# Automated VPS Deployment Workflow - v4
 name: Deploy Dashboard to VPS
 
 on:
@@ -37,6 +37,31 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Copy files to VPS using rsync
+        run: |
+          TARGET_DIR="${{ secrets.VPS_DASHBOARD_PATH || '/home/ubuntu/projects/pia_campbell-dashboard' }}"
+          # Ensure directory exists on VPS first
+          ssh ${{ secrets.VPS_USERNAME || secrets.SSH_USER }}@${{ secrets.VPS_HOST || secrets.EC2_HOST }} "mkdir -p $TARGET_DIR"
+          
+          # Sync files (excluding unnecessary ones)
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='.github' \
+            --exclude='.env*' \
+            . ${{ secrets.VPS_USERNAME || secrets.SSH_USER }}@${{ secrets.VPS_HOST || secrets.EC2_HOST }}:$TARGET_DIR/
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -47,46 +72,19 @@ jobs:
           script: |
             set -e
             echo "🚀 Starting Dashboard Deployment..."
-
-            # ── 1. Check/Install Docker ────────────────────────────────────
-            if ! command -v docker &>/dev/null; then
-              echo "🐳 Docker not found! Installing Docker..."
-              sudo apt-get update -y
-              sudo apt-get install -y ca-certificates curl gnupg lsb-release
-              sudo mkdir -p /etc/apt/keyrings
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-              echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-              sudo apt-get update -y
-              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-              sudo usermod -aG docker $USER
-              echo "✅ Docker installed successfully."
-            else
-              echo "✅ Docker is already installed: $(docker --version)"
-            fi
-
-            # ── 2. Navigate to directory ──────────────────────────────────
+            
             TARGET_DIR="${{ secrets.VPS_DASHBOARD_PATH || '/home/ubuntu/projects/pia_campbell-dashboard' }}"
-            if [ ! -d "$TARGET_DIR" ]; then
-              echo "📁 Creating target directory and cloning repository: $TARGET_DIR"
-              mkdir -p "$(dirname "$TARGET_DIR")"
-              git clone https://github.com/${{ github.repository }}.git "$TARGET_DIR"
-            fi
             cd "$TARGET_DIR"
-            git fetch origin main
-            git reset --hard origin/main
-            echo "✅ Code updated from GitHub."
 
-            # ── 3. Write .env.local file ──────────────────────────────────
+            # Write env variables from secrets
             if [ -n "${{ secrets.DASHBOARD_ENV }}" ]; then
               echo "${{ secrets.DASHBOARD_ENV }}" > .env.local
               echo "✅ .env.local file updated."
             fi
 
-            # ── 4. Build and run container ────────────────────────────────
+            # Build and run container
             echo "🐳 Running Docker Compose..."
             sudo docker compose up -d --build --remove-orphans
-
-            # ── 5. Cleanup ────────────────────────────────────────────────
             sudo docker image prune -f
 
             echo "✅ Dashboard deployed successfully!"

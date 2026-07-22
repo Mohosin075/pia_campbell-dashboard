@@ -1,4 +1,4 @@
-# Automated VPS Deployment Workflow
+# Automated VPS Deployment Workflow - v2
 name: Deploy Dashboard to VPS
 
 on:
